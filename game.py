@@ -1,5 +1,5 @@
 import time
-from utils import ChessBoard
+from board import ChessBoard
 from display import GUI
 
 

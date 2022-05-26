@@ -2,25 +2,8 @@ import sys
 import math
 import pygame
 from heapq import heapify, heappop, heappush
-from utils import values_piece
+from constant import pieces_images, values_piece
 
-pieces_images = {
-    'b_rook': pygame.image.load("img/b_c.png"),
-    'b_minister': pygame.image.load("img/b_x.png"),
-    'b_king': pygame.image.load("img/b_j.png"),
-    'b_knight': pygame.image.load("img/b_m.png"),
-    'b_warrior': pygame.image.load("img/b_s.png"),
-    'b_cannon': pygame.image.load("img/b_p.png"),
-    'b_pawn': pygame.image.load("img/b_z.png"),
-
-    'r_rook': pygame.image.load("img/r_c.png"),
-    'r_minister': pygame.image.load("img/r_x.png"),
-    'r_king': pygame.image.load("img/r_j.png"),
-    'r_knight': pygame.image.load("img/r_m.png"),
-    'r_warrior': pygame.image.load("img/r_s.png"),
-    'r_cannon': pygame.image.load("img/r_p.png"),
-    'r_pawn': pygame.image.load("img/r_z.png")
-}
 
 class GUI:
     def __init__(self):
