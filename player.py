@@ -1,6 +1,6 @@
 from piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
 
-class HumanPlayer:
+class Player():
     def __init__(self, color):
         self.color = color
         self.faction = 1
@@ -21,25 +21,39 @@ class HumanPlayer:
                     value = abs(self.current_board[i][j])
                     if value == 1:
                         rook = Rook(self.color, (i, j))
-                        self.all_move[(i,j)] = rook.next_valid_move(self.current_board)
+                        moves = rook.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
                     if value == 2:
                         knight = Knight(self.color, (i, j))
-                        self.all_move[(i,j)] = knight.next_valid_move(self.current_board)
+                        moves = knight.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
                     if value == 3:
                         cannon = Cannon(self.color, (i, j))
-                        self.all_move[(i,j)] = cannon.next_valid_move(self.current_board)
+                        moves = cannon.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
                     if value == 4:
                         minister = Minister(self.color, (i, j))
-                        self.all_move[(i,j)] = minister.next_valid_move(self.current_board)
+                        moves = minister.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
                     if value == 5:
                         warrior = Warrior(self.color, (i, j))
-                        self.all_move[(i,j)] = warrior.next_valid_move(self.current_board)
+                        moves = warrior.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
                     if value == 6:
                         pawn = Pawn(self.color, (i, j))
-                        self.all_move[(i,j)] = pawn.next_valid_move(self.current_board)
+                        moves = pawn.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
                     if value == 7:
                         king = King(self.color, (i, j))
-                        self.all_move[(i,j)] = king.next_valid_move(self.current_board)
+                        moves = king.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
         if len(self.all_move) > 0:
             return True
         else:
@@ -47,7 +61,7 @@ class HumanPlayer:
     
     def update_board(self, board):
         self.current_board = board
-
+class HumanPlayer(Player):
     def select_piece(self, posi):
         if self.current_board[posi[0]][posi[1]] * self.faction > 0:
             self.current_piece_value = self.current_board[posi[0]][posi[1]]
@@ -97,3 +111,9 @@ class HumanPlayer:
     def take_action(self, posi):
         if self.current_piece_value != 0:
             return self.action_valid(self.candidate_move, posi)
+
+
+class AIPlayer(Player):
+    def select_action(self):
+        for key in self.all_move:
+            return key, self.all_move[key][0]
