@@ -289,3 +289,51 @@ class Pawn(Piece):      # bing
                     if board[self.row][self.col-1] * self.value <= 0:
                         res.append((0, -1))
         return res
+
+class Knight(Piece):  # ma
+    def __init__(self, color, position):
+        self.name = 'knight'
+        self.color = color
+        self.value = piece_values[self.color + '_' + self.name]
+        self.row = position[0]
+        self.col = position[1]
+        self.j_max = 8
+        self.j_min = 0
+        self.i_max = 9
+        self.i_min = 0
+
+    def next_valid_move(self, board):
+        res = []
+        if self.row-2 >= self.i_min and self.col+1 <= self.j_max:    #able to move up right 1
+            if board[self.row-2][self.col+1] * self.value <= 0:
+                if board[self.row-1][self.col] == 0:
+                    res.append((-2, 1))
+        if self.row-1 >= self.i_min and self.col+2 <= self.j_max:    #able to move up right 2
+            if board[self.row-1][self.col+2] * self.value <= 0:
+                if board[self.row][self.col+1] == 0:
+                    res.append((-1, 2))
+        if self.row+1 <= self.i_max and self.col+2 <= self.j_max:    #able to move down right 1
+            if board[self.row+1][self.col+2] * self.value <= 0:
+                if board[self.row][self.col+1] == 0:
+                    res.append((1, 2))
+        if self.row+2 <= self.i_max and self.col+1 <= self.j_max:    #able to move down right 2
+            if board[self.row+2][self.col+1] * self.value <= 0:
+                if board[self.row+1][self.col] == 0:
+                    res.append((2, 1))
+        if self.row+2 <= self.i_max and self.col-1 >= self.j_min:    #able to move down left 1
+            if board[self.row+2][self.col-1] * self.value <= 0:
+                if board[self.row+1][self.col] == 0:
+                    res.append((2, -1))
+        if self.row+1 <= self.i_max and self.col-2 >= self.j_min:    #able to move down left 2
+            if board[self.row+1][self.col-2] * self.value <= 0:
+                if board[self.row][self.col-1] == 0:
+                    res.append((1, -2))
+        if self.row-1 >= self.i_min and self.col-2 >= self.j_min:    #able to move up left 1
+            if board[self.row-1][self.col-2] * self.value <= 0:
+                if board[self.row][self.col-1] == 0:
+                    res.append((-1, -2))
+        if self.row-2 >= self.i_min and self.col-1 >= self.j_min:    #able to move up left 2
+            if board[self.row-2][self.col-1] * self.value <= 0:
+                if board[self.row-1][self.col] == 0:
+                    res.append((-2, -1))
+        return res
