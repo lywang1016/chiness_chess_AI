@@ -7,8 +7,27 @@ class Piece:
         self.row = position[0]
         self.col = position[1]
     
-    def next_valid_move():
-        return 
+    def king_valid(self, board, position, move):
+        temp = board
+        value = temp[position[0]][position[1]]
+        temp[position[0]][position[1]] = 0
+        temp[position[0]+move[0]][position[1]+move[1]] = value
+
+        for i in range(10):
+            for j in range(3, 6):
+                if temp[i][j] == piece_values['b_king']:
+                    bk_posi = (i,j)
+                if temp[i][j] == piece_values['r_king']:
+                    rk_posi = (i,j)
+        if bk_posi[1] == rk_posi[1]:
+            flag = False
+            for row in range(bk_posi[0]+1, rk_posi[0]):
+                if temp[row][rk_posi[1]] != 0:
+                    flag = True
+                    break
+            return flag
+        else:
+            return True
 
 class King(Piece):      # Jiang
     def __init__(self, color, position):
@@ -29,13 +48,23 @@ class King(Piece):      # Jiang
     def next_valid_move(self, board):
         res = []
         if self.row+1 <= self.i_max:    #able to move down
-            if board[self.row+1][self.col] * self.value <= 0:
+            if board[self.row+1][self.col] * self.value <= 0:   
                 res.append((1, 0))
+                # if self.king_valid(board, (self.row, self.col), (1, 0)):
+                #     res.append((1, 0))
         if self.row-1 >= self.i_min:    #able to move up
             if board[self.row-1][self.col] * self.value <= 0:
                 res.append((-1, 0))
+                # temp_board.board = board
+                # temp_board.move_piece((self.row, self.col), (-1, 0))
+                # if temp_board.king_valid():
+                #     res.append((-1, 0))
         if self.col+1 <= self.j_max:    #able to move right
             if board[self.row][self.col+1] * self.value <= 0:
+                # temp_board.board = board
+                # temp_board.move_piece((self.row, self.col), (0, 1))
+                # if temp_board.king_valid():
+                #     res.append((0, 1))
                 hide_flag = False
                 if self.color == 'r':    # red
                     for i in range(self.row-1, -1, -1):
@@ -53,6 +82,10 @@ class King(Piece):      # Jiang
                     res.append((0, 1))
         if self.col-1 >= self.j_min:    #able to move left
             if board[self.row][self.col-1] * self.value <= 0:
+                # temp_board.board = board
+                # temp_board.move_piece((self.row, self.col), (0, -1))
+                # if temp_board.king_valid():
+                #     res.append((0, -1))
                 hide_flag = False
                 if self.color == 'r':    # red
                     for i in range(self.row-1, -1, -1):

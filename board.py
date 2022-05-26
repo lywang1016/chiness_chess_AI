@@ -54,7 +54,7 @@ class ChessBoard:
         have_rk = False
         have_bk = False
         for i in range(10):
-            for j in range(9):
+            for j in range(3, 6):
                 if self.board[i][j] == piece_values['b_king']:
                     have_bk = True
                 if self.board[i][j] == piece_values['r_king']:
@@ -63,4 +63,3 @@ class ChessBoard:
             self.done = False
         else:
             self.done = True
-
