@@ -77,6 +77,11 @@ class ChessBoard:
     
     def board_states(self):
         return self.board
+    
+    def move_piece(self, position, move):
+        value = self.board[position[0]][position[1]]
+        self.board[position[0]][position[1]] = 0
+        self.board[position[0]+move[0]][position[1]+move[1]] = value
 
 class Piece:
     def __init__(self, name, color, position):
