@@ -17,9 +17,11 @@ class HumanPlayer:
         if self.current_board[posi[0]][posi[1]] * self.faction > 0:
             self.current_piece_value = self.current_board[posi[0]][posi[1]]
             self.current_piece_posi = posi
+            return True
         else:
             self.current_piece_value = 0
             self.current_piece_posi = None
+            return False
         
     def take_action(self, posi):
         if self.current_piece_value != 0:
@@ -33,4 +35,6 @@ class HumanPlayer:
                     candidate_target_posi[target_posi] = move
                 if posi in candidate_target_posi:
                     return candidate_target_posi[posi]
+                else:
+                    return None
 

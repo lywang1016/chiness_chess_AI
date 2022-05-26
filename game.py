@@ -16,8 +16,8 @@ def main():
             position = gui.check_event()
             if position:
                 r_human.update_board(chess_board.board_states())
-                r_human.select_piece(position)
-                break
+                if r_human.select_piece(position):
+                    break
         while True:
             gui.update(chess_board.board_states())
             time.sleep(0.1)
@@ -25,8 +25,9 @@ def main():
             if position:
                 r_human.update_board(chess_board.board_states())
                 move = r_human.take_action(position)
-                chess_board.move_piece(r_human.current_piece_posi, move)
-                break
+                if move:
+                    chess_board.move_piece(r_human.current_piece_posi, move)
+                    break
         # black move
         while True:
             gui.update(chess_board.board_states())
@@ -34,8 +35,8 @@ def main():
             position = gui.check_event()
             if position:
                 b_human.update_board(chess_board.board_states())
-                b_human.select_piece(position)
-                break
+                if b_human.select_piece(position):
+                    break
         while True:
             gui.update(chess_board.board_states())
             time.sleep(0.1)
@@ -43,8 +44,9 @@ def main():
             if position:
                 b_human.update_board(chess_board.board_states())
                 move = b_human.take_action(position)
-                chess_board.move_piece(b_human.current_piece_posi, move)
-                break
+                if move:
+                    chess_board.move_piece(b_human.current_piece_posi, move)
+                    break
 
 if __name__ == '__main__':
     main()
