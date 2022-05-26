@@ -11,6 +11,8 @@ def main():
     while True:
         while True:
             # Red move
+            if not r_human.check_moves(chess_board.board_states()):
+                break
             while True:
                 gui.update(chess_board.board_states())
                 time.sleep(0.1)
@@ -32,6 +34,8 @@ def main():
             if chess_board.done:
                 break
             # black move
+            if not b_human.check_moves(chess_board.board_states()):
+                break
             while True:
                 gui.update(chess_board.board_states())
                 time.sleep(0.1)
