@@ -4,9 +4,11 @@ from constant import piece_values
 class ChessBoard:
     def __init__(self):
         self.board = np.zeros((10, 9))
+        self.done = False
         self.reset_board()
 
     def reset_board(self):
+        self.board = np.zeros((10, 9))
         self.board[0][0] = piece_values['b_rook']
         self.board[0][1] = piece_values['b_knight']
         self.board[0][2] = piece_values['b_minister']
@@ -39,6 +41,7 @@ class ChessBoard:
         self.board[9][6] = piece_values['r_minister']
         self.board[9][7] = piece_values['r_knight']
         self.board[9][8] = piece_values['r_rook']
+        self.done = False
     
     def board_states(self):
         return self.board
@@ -47,4 +50,17 @@ class ChessBoard:
         value = self.board[position[0]][position[1]]
         self.board[position[0]][position[1]] = 0
         self.board[position[0]+move[0]][position[1]+move[1]] = value
+        # check done
+        have_rk = False
+        have_bk = False
+        for i in range(10):
+            for j in range(9):
+                if self.board[i][j] == piece_values['b_king']:
+                    have_bk = True
+                if self.board[i][j] == piece_values['r_king']:
+                    have_rk = True
+        if have_rk and have_bk:
+            self.done = False
+        else:
+            self.done = True
 
