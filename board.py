@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 from constant import piece_values
 
@@ -44,7 +45,7 @@ class ChessBoard:
         self.done = False
     
     def board_states(self):
-        return self.board
+        return copy.deepcopy(self.board)
     
     def move_piece(self, position, move):
         value = self.board[position[0]][position[1]]
@@ -53,10 +54,12 @@ class ChessBoard:
         # check done
         have_rk = False
         have_bk = False
-        for i in range(10):
+        for i in range(3):
             for j in range(3, 6):
                 if self.board[i][j] == piece_values['b_king']:
                     have_bk = True
+        for i in range(7, 10):
+            for j in range(3, 6):
                 if self.board[i][j] == piece_values['r_king']:
                     have_rk = True
         if have_rk and have_bk:
