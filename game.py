@@ -44,16 +44,16 @@ def main():
             while True:
                 gui.update(chess_board.board_states())
                 time.sleep(0.1)
-                position = gui.check_event()
-                if position:
+                info, position = gui.check_event()
+                if info == 'grid':
                     r_human.update_board(chess_board.board_states())
                     if r_human.select_piece(position):
                         break
             while True:
                 gui.update(chess_board.board_states())
                 time.sleep(0.1)
-                position = gui.check_event()
-                if position:
+                info, position = gui.check_event()
+                if info == 'grid':
                     r_human.update_board(chess_board.board_states())
                     move = r_human.take_action(position)
                     if move:
@@ -73,16 +73,16 @@ def main():
             while True:
                 gui.update(chess_board.board_states())
                 time.sleep(0.1)
-                position = gui.check_event()
-                if position:
+                info, position = gui.check_event()
+                if info == 'grid':
                     b_human.update_board(chess_board.board_states())
                     if b_human.select_piece(position):
                         break
             while True:
                 gui.update(chess_board.board_states())
                 time.sleep(0.1)
-                position = gui.check_event()
-                if position:
+                info, position = gui.check_event()
+                if info == 'grid':
                     b_human.update_board(chess_board.board_states())
                     move = b_human.take_action(position)
                     if move:

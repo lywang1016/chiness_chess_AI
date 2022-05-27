@@ -52,8 +52,9 @@ class GUI:
                             dis = (center_x - mouse_x)**2 + (center_y - mouse_y)**2
                             heappush(queue, (dis, (i, j)))
                     dis, posi = heappop(queue)
-                    return posi
+                    return 'grid', posi
                 else:
                     print(mouse_x)
                     print(mouse_y)
-                    return (-1, -1)
+                    return 'none', (-1, -1)
+        return 'none', (-1, -1)
