@@ -2,7 +2,7 @@ import sys
 import math
 import pygame
 from heapq import heapify, heappop, heappush
-from constant import pieces_images, values_piece
+from constant import pieces_images, values_piece, round_imgs, button_imgs
 
 class GUI:
     def __init__(self):
@@ -21,10 +21,18 @@ class GUI:
                 temp.append((pixel_init_col+j*self.pixel_dif, pixel_init_row+i*self.pixel_dif))
             self.positions.append(temp)
     
-    def update(self, board):
+    def update(self, board, round):
         self.screen.blit(self.side_img, (0, 0))
         self.screen.blit(self.side_img, (360, 0))
         self.screen.blit(self.background_img, (10, 10))
+        self.screen.blit(button_imgs['reset'], (545, 240))
+        self.screen.blit(button_imgs['turn180'], (545, 300))
+
+        if round == 'r':
+            self.screen.blit(round_imgs['r_move'], (560, 40))
+        else:
+            self.screen.blit(round_imgs['b_move'], (560, 505))
+            
 
         for i in range(10):
             for j in range(9):
@@ -53,6 +61,10 @@ class GUI:
                             heappush(queue, (dis, (i, j)))
                     dis, posi = heappop(queue)
                     return 'grid', posi
+                elif mouse_x < 665 and mouse_x > 515 and mouse_y < 250 and mouse_y > 210:
+                    return 'reset', (-1, -1)
+                elif mouse_x < 665 and mouse_x > 515 and mouse_y < 310 and mouse_y > 270:
+                    return 'turn180', (-1, -1)
                 else:
                     print(mouse_x)
                     print(mouse_y)

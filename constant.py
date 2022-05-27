@@ -18,6 +18,16 @@ pieces_images = {
     'r_pawn': pygame.image.load("img/r_z.png")
 }
 
+round_imgs = {
+    'r_move': pygame.image.load("img/r_move.jpg"),
+    'b_move': pygame.image.load("img/b_move.jpg")
+}
+
+button_imgs = {
+    'turn180': pygame.image.load("img/turn180.jpg"),
+    'reset': pygame.image.load("img/reset.jpg")
+}
+
 piece_values = {
     'b_rook': -1,
     'b_knight': -2,
