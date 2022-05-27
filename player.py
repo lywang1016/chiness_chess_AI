@@ -1,3 +1,4 @@
+import copy
 from piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
 
 class Player():
@@ -12,9 +13,8 @@ class Player():
         self.cadidate_move = []
         self.all_move = {}
     
-    def check_moves(self, board):
+    def check_moves(self):
         self.all_move = {}
-        self.current_board = board
         for i in range(10):
             for j in range(9):
                 if self.current_board[i][j] * self.faction > 0:
@@ -60,7 +60,7 @@ class Player():
             return False
     
     def update_board(self, board):
-        self.current_board = board
+        self.current_board = copy.deepcopy(board)
 class HumanPlayer(Player):
     def select_piece(self, posi):
         if self.current_board[posi[0]][posi[1]] * self.faction > 0:
