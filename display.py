@@ -4,7 +4,6 @@ import pygame
 from heapq import heapify, heappop, heappush
 from constant import pieces_images, values_piece
 
-
 class GUI:
     def __init__(self):
         pygame.init()
@@ -40,12 +39,12 @@ class GUI:
                 pygame.quit()
                 sys.exit()  
             if event.type == pygame.MOUSEBUTTONDOWN:
-                queue = []
-                heapify(queue)
                 pos = pygame.mouse.get_pos()
                 mouse_x = pos[0]-math.ceil(self.pixel_dif/2)
                 mouse_y = pos[1]-math.ceil(self.pixel_dif/2)
-                if mouse_x < 512 and mouse_y < 570:
+                if mouse_x < 512 and mouse_y < 570:  
+                    queue = []
+                    heapify(queue)
                     for i in range(10):
                         for j in range(9):
                             center_x = self.positions[i][j][0]
@@ -55,4 +54,6 @@ class GUI:
                     dis, posi = heappop(queue)
                     return posi
                 else:
+                    print(mouse_x)
+                    print(mouse_y)
                     return (-1, -1)
