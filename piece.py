@@ -68,37 +68,11 @@ class King(Piece):      # Jiang
                     res.append((-1, 0))
         if self.col+1 <= self.j_max:    #able to move right
             if board[self.row][self.col+1] * self.value <= 0:
-                hide_flag = False
-                if self.color == 'r':    # red
-                    for i in range(self.row-1, -1, -1):
-                        if board[i][self.col+1] != 0:   #some thing there
-                            if board[i][self.col+1] != -self.value:
-                                hide_flag = True
-                            break
-                else:               # black
-                    for i in range(self.row+1, 10):
-                        if board[i][self.col+1] != 0:   #some thing there
-                            if board[i][self.col+1] != -self.value:
-                                hide_flag = True
-                            break
-                if hide_flag:
+                if self.king_valid(board, (self.row, self.col), (0, 1)):
                     res.append((0, 1))
         if self.col-1 >= self.j_min:    #able to move left
             if board[self.row][self.col-1] * self.value <= 0:
-                hide_flag = False
-                if self.color == 'r':    # red
-                    for i in range(self.row-1, -1, -1):
-                        if board[i][self.col-1] != 0:   #some thing there
-                            if board[i][self.col-1] != -self.value:
-                                hide_flag = True
-                            break
-                else:               # black
-                    for i in range(self.row+1, 10):
-                        if board[i][self.col-1] != 0:   #some thing there
-                            if board[i][self.col-1] != -self.value:
-                                hide_flag = True
-                            break
-                if hide_flag:
+                if self.king_valid(board, (self.row, self.col), (0, -1)):
                     res.append((0, -1))
         return res
 
