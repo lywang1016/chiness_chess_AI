@@ -3,32 +3,6 @@ from board import ChessBoard
 from display import GUI
 from player import HumanPlayer, AIPlayer
 
-# class Game():
-#     def __init__(self, r_type, b_type):
-#         self.board = ChessBoard()
-#         self.gui = GUI()
-#         self.r_type = r_type
-#         self.b_type = b_type
-#         if r_type == 'human':
-#             self.player_r = HumanPlayer('r')
-#         if b_type == 'human':
-#             self.player_b = HumanPlayer('b')
-#         self.turn = True
-#         self.done = False
-#         # self.gui.update(self.board.board_states())
-
-    # def step(self):
-    #     if self.turn:   # Red move
-    #         self.player_r.update_board(self.board.board_states())
-    #         self.player_r.check_moves()
-    #         if self.r_type == 'human':
-
-
-    #     else:           # Black move
-    #         self.player_b.update_board(self.board.board_states())
-    #         self.player_b.check_moves()
-    #     self.turn = not self.turn
-
 def main():
     chess_board = ChessBoard()
     gui = GUI()
@@ -52,6 +26,8 @@ def main():
                 print('turn180')
                 chess_board.rotate_board()
                 red = not red
+                r_human.reset()
+                b_human.reset()
             if info == 'grid':
                 if red: #check whos turn (red move)
                     r_human.update_board(chess_board.board_states())
@@ -78,6 +54,7 @@ def main():
         chess_board.reset_board()
         r_human.reset()
         b_human.reset()
+        red = True
 
 if __name__ == '__main__':
     main()
