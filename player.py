@@ -129,6 +129,22 @@ class HumanPlayer(Player):
             self.move = None
 
 class AIPlayer(Player):
+    def __init__(self, color):
+        self.color = color
+        self.faction = 1
+        self.current_board = None
+        self.current_piece_value = 0
+        self.current_piece_posi = None
+        self.cadidate_move = []
+        self.all_move = {}
+
+    def check_color(self):
+        if self.color == 'b':       # rotate board
+            self.current_board = self.current_board[::-1,::-1]
+            for i in range(10):
+                for j in range(9):
+                    self.current_board[i][j] = -self.current_board[i][j]
+
     def select_action(self):
         for key in self.all_move:
             return key, self.all_move[key][0]
