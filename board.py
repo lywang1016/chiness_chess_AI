@@ -6,6 +6,7 @@ class ChessBoard:
     def __init__(self):
         self.board = np.zeros((10, 9))
         self.done = False
+        self.win = None
         self.reset_board()
 
     def reset_board(self):
@@ -43,9 +44,11 @@ class ChessBoard:
         self.board[9][7] = piece_values['r_knight']
         self.board[9][8] = piece_values['r_rook']
         self.done = False
+        self.win = None
 
     def load_board(self, board):
         self.board = board
+        self.check_done()
     
     def board_states(self):
         return copy.deepcopy(self.board)
@@ -60,7 +63,9 @@ class ChessBoard:
         value = self.board[position[0]][position[1]]
         self.board[position[0]][position[1]] = 0
         self.board[position[0]+move[0]][position[1]+move[1]] = value
-        # check done
+        self.check_done()
+
+    def check_done(self):
         have_rk = False
         have_bk = False
         for i in range(3):
@@ -72,6 +77,11 @@ class ChessBoard:
                 if self.board[i][j] == piece_values['r_king']:
                     have_rk = True
         if have_rk and have_bk:
+            self.win = None
             self.done = False
         else:
+            if have_rk:
+                self.win = 'r'
+            else:
+                self.win = 'b'
             self.done = True
