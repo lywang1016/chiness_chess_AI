@@ -21,18 +21,14 @@ def main():
             if info == 'reset':
                 print('reset')
                 break
-            if info == 'turn180':
+            elif info == 'turn180':
                 print('turn180')
                 chess_board.rotate_board()
                 red = not red
                 r_human.reset()
                 b_human.reset()
-            if info == 'grid':
+            elif info == 'grid':
                 if red: #check whos turn (red move)
-                    r_human.update_board(chess_board.board_states())
-                    if not r_human.check_moves():
-                        chess_board.win = 'b'
-                        break
                     if r_human.stage == 'pick':
                         r_human.select_piece(position)
                     if r_human.stage == 'go':
@@ -41,10 +37,6 @@ def main():
                             chess_board.move_piece(r_human.current_piece_posi, r_human.move)
                             red = not red
                 else:   #black move
-                    b_human.update_board(chess_board.board_states())
-                    if not b_human.check_moves():
-                        chess_board.win = 'r'
-                        break
                     if b_human.stage == 'pick':
                         b_human.select_piece(position)
                     if b_human.stage == 'go':
@@ -52,6 +44,15 @@ def main():
                         if b_human.move:
                             chess_board.move_piece(b_human.current_piece_posi, b_human.move)
                             red = not red
+            else:
+                r_human.update_board(chess_board.board_states())
+                if not r_human.check_moves():
+                    chess_board.win = 'b'
+                    break
+                b_human.update_board(chess_board.board_states())
+                if not b_human.check_moves():
+                    chess_board.win = 'r'
+                    break
         if chess_board.win == 'r':
             print('Red Win!')
         else:
