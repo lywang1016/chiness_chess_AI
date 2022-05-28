@@ -62,6 +62,28 @@ class Player():
     def update_board(self, board):
         self.current_board = copy.deepcopy(board)
 class HumanPlayer(Player):
+    def __init__(self, color):
+        self.color = color
+        self.faction = 1
+        if color == 'b':
+            self.faction = -1
+        self.current_board = None
+        self.current_piece_value = 0
+        self.current_piece_posi = None
+        self.cadidate_move = []
+        self.all_move = {}
+        self.stage = 'pick'
+        self.move = None
+
+    def reset(self):
+        self.current_board = None
+        self.current_piece_value = 0
+        self.current_piece_posi = None
+        self.cadidate_move = []
+        self.all_move = {}
+        self.stage = 'pick'
+        self.move = None
+
     def select_piece(self, posi):
         if self.current_board[posi[0]][posi[1]] * self.faction > 0:
             self.current_piece_value = self.current_board[posi[0]][posi[1]]
@@ -89,29 +111,22 @@ class HumanPlayer(Player):
                 king = King(self.color, self.current_piece_posi)
                 self.candidate_move = king.next_valid_move(self.current_board)
             if len(self.candidate_move) > 0:
-                return True
-            else:
-                return False
+                self.stage = 'go'
         else:
             self.current_piece_value = 0
             self.current_piece_posi = None
-            return False
 
-    def action_valid(self, candidate_move, posi):
+    def action_valid(self, posi):
         candidate_target_posi = {}
-        for move in candidate_move:
+        for move in self.candidate_move:
             target_posi = (self.current_piece_posi[0]+move[0], self.current_piece_posi[1]+move[1])
             candidate_target_posi[target_posi] = move
         if posi in candidate_target_posi:
             self.candidate_move = []
-            return candidate_target_posi[posi]
+            self.stage = 'pick'
+            self.move = candidate_target_posi[posi]
         else:
-            return None
-        
-    def take_action(self, posi):
-        if self.current_piece_value != 0:
-            return self.action_valid(self.candidate_move, posi)
-
+            self.move = None
 
 class AIPlayer(Player):
     def select_action(self):

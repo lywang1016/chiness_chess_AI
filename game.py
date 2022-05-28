@@ -17,81 +17,66 @@ from player import HumanPlayer, AIPlayer
 #         self.done = False
 #         # self.gui.update(self.board.board_states())
 
-#     def step(self):
-#         if self.turn:   # Red move
-#             self.player_r.update_board(self.board.board_states())
-#             self.player_r.check_moves()
-#             if self.r_type == 'human':
+    # def step(self):
+    #     if self.turn:   # Red move
+    #         self.player_r.update_board(self.board.board_states())
+    #         self.player_r.check_moves()
+    #         if self.r_type == 'human':
 
 
-#         else:           # Black move
-#             self.player_b.update_board(self.board.board_states())
-#             self.player_b.check_moves()
-#         self.turn = not self.turn
+    #     else:           # Black move
+    #         self.player_b.update_board(self.board.board_states())
+    #         self.player_b.check_moves()
+    #     self.turn = not self.turn
 
 def main():
     chess_board = ChessBoard()
     gui = GUI()
+    red = True
     r_human = HumanPlayer('r')
     b_human = HumanPlayer('b')
     # b_ai = AIPlayer('b')
     while True:
-        while True:
-            # Red move
-            r_human.update_board(chess_board.board_states())
-            if not r_human.check_moves():
-                break
-            while True:
+        while not chess_board.done:
+            if red:
                 gui.update(chess_board.board_states(), 'r')
-                time.sleep(0.1)
-                info, position = gui.check_event()
-                if info == 'grid':
-                    r_human.update_board(chess_board.board_states())
-                    if r_human.select_piece(position):
-                        break
-            while True:
-                gui.update(chess_board.board_states(), 'r')
-                time.sleep(0.1)
-                info, position = gui.check_event()
-                if info == 'grid':
-                    r_human.update_board(chess_board.board_states())
-                    move = r_human.take_action(position)
-                    if move:
-                        chess_board.move_piece(r_human.current_piece_posi, move)
-                        break
-            if chess_board.done:
-                break
-            # black move
-            # if not b_ai.check_moves(chess_board.board_states()):
-            #     break
-            # posi, action = b_ai.select_action()
-            # chess_board.move_piece(posi, action)
-
-            b_human.update_board(chess_board.board_states())
-            if not b_human.check_moves():
-                break
-            while True:
+            else:
                 gui.update(chess_board.board_states(), 'b')
-                time.sleep(0.1)
-                info, position = gui.check_event()
-                if info == 'grid':
-                    b_human.update_board(chess_board.board_states())
-                    if b_human.select_piece(position):
-                        break
-            while True:
-                gui.update(chess_board.board_states(), 'b')
-                time.sleep(0.1)
-                info, position = gui.check_event()
-                if info == 'grid':
-                    b_human.update_board(chess_board.board_states())
-                    move = b_human.take_action(position)
-                    if move:
-                        chess_board.move_piece(b_human.current_piece_posi, move)
-                        break
+            time.sleep(0.1)
+            info, position = gui.check_event()
 
-            if chess_board.done:
+            if info == 'reset':
+                print('reset')
                 break
+            if info == 'turn180':
+                print('turn180')
+                chess_board.rotate_board()
+            if info == 'grid':
+                if red: #check whos turn (red move)
+                    r_human.update_board(chess_board.board_states())
+                    if not r_human.check_moves():
+                        break
+                    if r_human.stage == 'pick':
+                        r_human.select_piece(position)
+                    if r_human.stage == 'go':
+                        r_human.action_valid(position)
+                        if r_human.move:
+                            chess_board.move_piece(r_human.current_piece_posi, r_human.move)
+                            red = not red
+                else:   #black move
+                    b_human.update_board(chess_board.board_states())
+                    if not b_human.check_moves():
+                        break
+                    if b_human.stage == 'pick':
+                        b_human.select_piece(position)
+                    if b_human.stage == 'go':
+                        b_human.action_valid(position)
+                        if b_human.move:
+                            chess_board.move_piece(b_human.current_piece_posi, b_human.move)
+                            red = not red
         chess_board.reset_board()
+        r_human.reset()
+        b_human.reset()
 
 if __name__ == '__main__':
     main()

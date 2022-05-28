@@ -43,9 +43,18 @@ class ChessBoard:
         self.board[9][7] = piece_values['r_knight']
         self.board[9][8] = piece_values['r_rook']
         self.done = False
+
+    def load_board(self, board):
+        self.board = board
     
     def board_states(self):
         return copy.deepcopy(self.board)
+
+    def rotate_board(self):
+        self.board = self.board[::-1,::-1]
+        for i in range(10):
+            for j in range(9):
+                self.board[i][j] = -self.board[i][j]
     
     def move_piece(self, position, move):
         value = self.board[position[0]][position[1]]
