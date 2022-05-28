@@ -51,6 +51,7 @@ def main():
             if info == 'turn180':
                 print('turn180')
                 chess_board.rotate_board()
+                red = not red
             if info == 'grid':
                 if red: #check whos turn (red move)
                     r_human.update_board(chess_board.board_states())
