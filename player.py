@@ -142,6 +142,13 @@ class AIPlayer(Player):
         self.cadidate_move = []
         self.all_move = {}
 
+    def reset(self):
+        self.current_board = None
+        self.current_piece_value = 0
+        self.current_piece_posi = None
+        self.cadidate_move = []
+        self.all_move = {}
+
     def update_board(self, board):
         self.board.load_board(board)
         if self.color == 'b':       # rotate board
@@ -155,41 +162,41 @@ class AIPlayer(Player):
                 if self.current_board[i][j] * self.faction > 0:
                     value = abs(self.current_board[i][j])
                     if value == 1:
-                        rook = Rook(self.color, (i, j))
+                        rook = Rook('r', (i, j))
                         moves = rook.next_valid_move(self.current_board)
                         if len(moves) > 0:
                             self.all_move[(i,j)] = moves
                     if value == 2:
-                        knight = Knight(self.color, (i, j))
+                        knight = Knight('r', (i, j))
                         moves = knight.next_valid_move(self.current_board)
                         if len(moves) > 0:
                             self.all_move[(i,j)] = moves
                     if value == 3:
-                        cannon = Cannon(self.color, (i, j))
+                        cannon = Cannon('r', (i, j))
                         moves = cannon.next_valid_move(self.current_board)
                         if len(moves) > 0:
                             self.all_move[(i,j)] = moves
                     if value == 4:
-                        minister = Minister(self.color, (i, j))
+                        minister = Minister('r', (i, j))
                         moves = minister.next_valid_move(self.current_board)
                         if len(moves) > 0:
                             self.all_move[(i,j)] = moves
                     if value == 5:
-                        warrior = Warrior(self.color, (i, j))
+                        warrior = Warrior('r', (i, j))
                         moves = warrior.next_valid_move(self.current_board)
                         if len(moves) > 0:
                             self.all_move[(i,j)] = moves
                     if value == 6:
-                        pawn = Pawn(self.color, (i, j))
+                        pawn = Pawn('r', (i, j))
                         moves = pawn.next_valid_move(self.current_board)
                         if len(moves) > 0:
                             self.all_move[(i,j)] = moves
                     if value == 7:
-                        king = King(self.color, (i, j))
+                        king = King('r', (i, j))
                         moves = king.next_valid_move(self.current_board)
                         if len(moves) > 0:
                             self.all_move[(i,j)] = moves
-        for posi in self.all_move:
+        for posi in self.all_move: # if able to take black king, the only valid action is take the king
             for move in self.all_move[posi]:
                 if self.current_board[posi[0]+move[0]][posi[1]+move[1]] == piece_values['b_king']:
                     self.all_move = {}
@@ -201,10 +208,9 @@ class AIPlayer(Player):
             return False
 
     def rotate_action(self, posi, move):
-        move[0] = -move[0]
-        move[1] = -move[1]
-        posi[0] = 9 - posi[0]
-        posi[1] = 8 - posi[1]
+        move_ = (-move[0], -move[1])
+        posi_ = (9 - posi[0], 8 - posi[1])
+        return posi_, move_
 
     def random_action(self):
         posi_num = len(self.all_move)
@@ -224,5 +230,5 @@ class AIPlayer(Player):
                 break
             idx += 1
         if self.color == 'b':       # rotate move
-            self.rotate_action(posi, move)
+            return self.rotate_action(posi, move)
         return posi, move

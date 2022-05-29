@@ -45,14 +45,16 @@ def main():
                             chess_board.move_piece(b_human.current_piece_posi, b_human.move)
                             red = not red
             else:
-                r_human.update_board(chess_board.board_states())
-                if not r_human.check_moves():
-                    chess_board.win = 'b'
-                    break
-                b_human.update_board(chess_board.board_states())
-                if not b_human.check_moves():
-                    chess_board.win = 'r'
-                    break
+                if red:
+                    r_human.update_board(chess_board.board_states())
+                    if not r_human.check_moves():
+                        chess_board.win = 'b'
+                        break
+                else:
+                    b_human.update_board(chess_board.board_states())
+                    if not b_human.check_moves():
+                        chess_board.win = 'r'
+                        break
         if chess_board.win == 'r':
             print('Red Win!')
         else:
