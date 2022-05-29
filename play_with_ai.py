@@ -34,7 +34,7 @@ def human_vs_human():
                     if r_human.stage == 'go':
                         r_human.action_valid(position)
                         if r_human.move:
-                            chess_board.move_piece(r_human.current_piece_posi, r_human.move)
+                            chess_board.move_piece(r_human.current_piece_posi, r_human.move, red)
                             red = not red
                 else:   #black move
                     if b_human.stage == 'pick':
@@ -42,7 +42,7 @@ def human_vs_human():
                     if b_human.stage == 'go':
                         b_human.action_valid(position)
                         if b_human.move:
-                            chess_board.move_piece(b_human.current_piece_posi, b_human.move)
+                            chess_board.move_piece(b_human.current_piece_posi, b_human.move, red)
                             red = not red
             else:
                 if red:
@@ -103,7 +103,7 @@ def human_vs_ai():
                         if human.stage == 'go':
                             human.action_valid(position)
                             if human.move:
-                                chess_board.move_piece(human.current_piece_posi, human.move)
+                                chess_board.move_piece(human.current_piece_posi, human.move, red)
                                 red = not red
                 else:
                     if not red: #check whos turn (red move)
@@ -112,7 +112,7 @@ def human_vs_ai():
                         if human.stage == 'go':
                             human.action_valid(position)
                             if human.move:
-                                chess_board.move_piece(human.current_piece_posi, human.move)
+                                chess_board.move_piece(human.current_piece_posi, human.move, red)
                                 red = not red
             else:
                 if human_color == 'r':
@@ -127,7 +127,7 @@ def human_vs_ai():
                             chess_board.set_done('r')
                             break
                         posi, move = ai.random_action()
-                        chess_board.move_piece(posi, move)
+                        chess_board.move_piece(posi, move, red)
                         red = not red
                 else:
                     if not red:
@@ -141,7 +141,7 @@ def human_vs_ai():
                             chess_board.set_done('r')
                             break
                         posi, move = ai.random_action()
-                        chess_board.move_piece(posi, move)
+                        chess_board.move_piece(posi, move, red)
                         red = not red
         if chess_board.win == 'r':
             print('Red Win!')
@@ -187,7 +187,7 @@ def ai_vs_ai():
                         chess_board.set_done('b')
                         break
                     posi, move = r_ai.random_action()
-                    chess_board.move_piece(posi, move)
+                    chess_board.move_piece(posi, move, red)
                     red = not red
                 else:
                     b_ai.update_board(chess_board.board_states())
@@ -195,7 +195,7 @@ def ai_vs_ai():
                         chess_board.set_done('r')
                         break
                     posi, move = b_ai.random_action()
-                    chess_board.move_piece(posi, move)
+                    chess_board.move_piece(posi, move, red)
                     red = not red
         if chess_board.win == 'r':
             print('Red Win!')

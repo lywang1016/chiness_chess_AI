@@ -12,7 +12,6 @@ class ChessBoard:
         self.dataset = {}
         self.red_history = []
         self.black_history = []
-        self.red = True
         self.reset_board()
 
     def reset_board(self):
@@ -54,7 +53,6 @@ class ChessBoard:
         self.dataset = {}
         self.red_history = []
         self.black_history = []
-        self.red = True
         self.dataset = {}
 
     def set_done(self, win_color):
@@ -92,13 +90,12 @@ class ChessBoard:
     def rotate_board(self):
         self.board = board_turn180(self.board)
     
-    def move_piece(self, position, move):
+    def move_piece(self, position, move, color):
         if self.record:
-            if self.red:
+            if color == 'r':
                 self.red_history.append(board_to_key(self.board_states()))
             else:
                 self.black_history.append(board_to_key(board_turn180(self.board_states())))
-            self.red = not self.red
 
         value = self.board[position[0]][position[1]]
         self.board[position[0]][position[1]] = 0
