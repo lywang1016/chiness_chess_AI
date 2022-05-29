@@ -1,7 +1,7 @@
 import copy
 import numpy as np
-from board import ChessBoard
 from piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
+from utils import rotate_action, board_turn180
 from constant import piece_values
 
 class Player():
@@ -135,7 +135,6 @@ class AIPlayer(Player):
     def __init__(self, color):
         self.color = color
         self.faction = 1
-        self.board = ChessBoard()
         self.current_board = None
         self.current_piece_value = 0
         self.current_piece_posi = None
@@ -150,10 +149,10 @@ class AIPlayer(Player):
         self.all_move = {}
 
     def update_board(self, board):
-        self.board.load_board(board)
         if self.color == 'b':       # rotate board
-            self.board.rotate_board()
-        self.current_board = self.board.board_states()
+            self.current_board = board_turn180(board)
+        else:
+            self.current_board = board
 
     def check_moves(self):
         self.all_move = {}
@@ -207,11 +206,6 @@ class AIPlayer(Player):
         else:
             return False
 
-    def rotate_action(self, posi, move):
-        move_ = (-move[0], -move[1])
-        posi_ = (9 - posi[0], 8 - posi[1])
-        return posi_, move_
-
     def random_action(self):
         posi_num = len(self.all_move)
         posi_idx = np.random.randint(posi_num)
@@ -230,5 +224,5 @@ class AIPlayer(Player):
                 break
             idx += 1
         if self.color == 'b':       # rotate move
-            return self.rotate_action(posi, move)
+            return rotate_action(posi, move)
         return posi, move

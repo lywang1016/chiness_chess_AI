@@ -1,5 +1,6 @@
 import copy
 import numpy as np
+from utils import board_turn180
 from constant import piece_values
 
 class ChessBoard:
@@ -46,24 +47,9 @@ class ChessBoard:
         self.done = False
         self.win = None
 
-    def load_board(self, board):
-        self.board = board
-        self.check_done()
-    
-    def board_states(self):
-        return copy.deepcopy(self.board)
-
-    def rotate_board(self):
-        self.board = self.board[::-1,::-1]
-        for i in range(10):
-            for j in range(9):
-                self.board[i][j] = -self.board[i][j]
-    
-    def move_piece(self, position, move):
-        value = self.board[position[0]][position[1]]
-        self.board[position[0]][position[1]] = 0
-        self.board[position[0]+move[0]][position[1]+move[1]] = value
-        self.check_done()
+    def set_done(self, win_color):
+        self.win = win_color
+        self.done = True
 
     def check_done(self):
         have_rk = False
@@ -85,3 +71,19 @@ class ChessBoard:
             else:
                 self.win = 'b'
             self.done = True
+
+    def load_board(self, board):
+        self.board = board
+        self.check_done()
+    
+    def board_states(self):
+        return copy.deepcopy(self.board)
+
+    def rotate_board(self):
+        self.board = board_turn180(self.board)
+    
+    def move_piece(self, position, move):
+        value = self.board[position[0]][position[1]]
+        self.board[position[0]][position[1]] = 0
+        self.board[position[0]+move[0]][position[1]+move[1]] = value
+        self.check_done()
