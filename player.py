@@ -1,6 +1,8 @@
 import copy
+import numpy as np
 from board import ChessBoard
 from piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
+from constant import piece_values
 
 class Player():
     def __init__(self, color):
@@ -146,6 +148,81 @@ class AIPlayer(Player):
             self.board.rotate_board()
         self.current_board = self.board.board_states()
 
-    def select_action(self):
+    def check_moves(self):
+        self.all_move = {}
+        for i in range(10):
+            for j in range(9):
+                if self.current_board[i][j] * self.faction > 0:
+                    value = abs(self.current_board[i][j])
+                    if value == 1:
+                        rook = Rook(self.color, (i, j))
+                        moves = rook.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
+                    if value == 2:
+                        knight = Knight(self.color, (i, j))
+                        moves = knight.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
+                    if value == 3:
+                        cannon = Cannon(self.color, (i, j))
+                        moves = cannon.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
+                    if value == 4:
+                        minister = Minister(self.color, (i, j))
+                        moves = minister.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
+                    if value == 5:
+                        warrior = Warrior(self.color, (i, j))
+                        moves = warrior.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
+                    if value == 6:
+                        pawn = Pawn(self.color, (i, j))
+                        moves = pawn.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
+                    if value == 7:
+                        king = King(self.color, (i, j))
+                        moves = king.next_valid_move(self.current_board)
+                        if len(moves) > 0:
+                            self.all_move[(i,j)] = moves
+        for posi in self.all_move:
+            for move in self.all_move[posi]:
+                if self.current_board[posi[0]+move[0]][posi[1]+move[1]] == piece_values['b_king']:
+                    self.all_move = {}
+                    self.all_move[posi] = [move]
+                    return True
+        if len(self.all_move) > 0:
+            return True
+        else:
+            return False
+
+    def rotate_action(self, posi, move):
+        move[0] = -move[0]
+        move[1] = -move[1]
+        posi[0] = 9 - posi[0]
+        posi[1] = 8 - posi[1]
+
+    def random_action(self):
+        posi_num = len(self.all_move)
+        posi_idx = np.random.randint(posi_num)
+        idx = 0
         for key in self.all_move:
-            return key, self.all_move[key][0]
+            if idx == posi_idx:
+                posi = key
+                break
+            idx += 1
+        move_num = len(self.all_move[posi])
+        move_idx = np.random.randint(move_num)
+        idx = 0
+        for moves in self.all_move[posi]:
+            if idx == move_idx:
+                move = moves
+                break
+            idx += 1
+        if self.color == 'b':       # rotate move
+            self.rotate_action(posi, move)
+        return posi, move
