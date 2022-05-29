@@ -65,7 +65,7 @@ def human_vs_human():
         red = True
 
 def human_vs_ai():
-    chess_board = ChessBoard()
+    chess_board = ChessBoard(record = True)
     gui = GUI()
     red = True
 
@@ -147,6 +147,8 @@ def human_vs_ai():
             print('Red Win!')
         else:
             print('Black Win!')
+        chess_board.fill_dataset()
+        print(chess_board.dataset)
         chess_board.reset_board()
         ai.reset()
         human.reset()

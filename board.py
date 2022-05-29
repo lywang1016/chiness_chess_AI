@@ -1,13 +1,18 @@
 import copy
 import numpy as np
-from utils import board_turn180
+from utils import board_turn180, board_to_key, key_to_board
 from constant import piece_values
 
 class ChessBoard:
-    def __init__(self):
+    def __init__(self, record = False):
+        self.record = record
         self.board = np.zeros((10, 9))
         self.done = False
         self.win = None
+        self.dataset = {}
+        self.red_history = []
+        self.black_history = []
+        self.red = True
         self.reset_board()
 
     def reset_board(self):
@@ -46,6 +51,11 @@ class ChessBoard:
         self.board[9][8] = piece_values['r_rook']
         self.done = False
         self.win = None
+        self.dataset = {}
+        self.red_history = []
+        self.black_history = []
+        self.red = True
+        self.dataset = {}
 
     def set_done(self, win_color):
         self.win = win_color
@@ -83,7 +93,50 @@ class ChessBoard:
         self.board = board_turn180(self.board)
     
     def move_piece(self, position, move):
+        if self.record:
+            if self.red:
+                self.red_history.append(board_to_key(self.board_states()))
+            else:
+                self.black_history.append(board_to_key(board_turn180(self.board_states())))
+            self.red = not self.red
+
         value = self.board[position[0]][position[1]]
         self.board[position[0]][position[1]] = 0
         self.board[position[0]+move[0]][position[1]+move[1]] = value
         self.check_done()
+
+    def fill_dataset(self):
+        if self.record:
+            if self.win == 'r':
+                for key in self.red_history:
+                    if key not in self.dataset:
+                        self.dataset[key] = [1, 0, 0]
+                    else:
+                        self.dataset[key][0] += 1
+                for key in self.black_history:
+                    if key not in self.dataset:
+                        self.dataset[key] = [0, 0, 1]
+                    else:
+                        self.dataset[key][2] += 1
+            if self.win == 'b':
+                for key in self.black_history:
+                    if key not in self.dataset:
+                        self.dataset[key] = [1, 0, 0]
+                    else:
+                        self.dataset[key][0] += 1
+                for key in self.red_history:
+                    if key not in self.dataset:
+                        self.dataset[key] = [0, 0, 1]
+                    else:
+                        self.dataset[key][2] += 1
+            if self.win == 't':
+                for key in self.black_history:
+                    if key not in self.dataset:
+                        self.dataset[key] = [0, 1, 0]
+                    else:
+                        self.dataset[key][1] += 1
+                for key in self.red_history:
+                    if key not in self.dataset:
+                        self.dataset[key] = [0, 1, 0]
+                    else:
+                        self.dataset[key][1] += 1
