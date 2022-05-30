@@ -149,7 +149,8 @@ class ChessBoard:
     def save_csv(self):
         time_info = datetime.datetime.now()
         file_name = str(time_info.year)+'_'+str(time_info.month)+'_'+str(time_info.day)+'-'\
-                    +str(time_info.hour)+'_'+str(time_info.minute)+'_'+str(time_info.second)+'.csv'
+                    +str(time_info.hour)+'_'+str(time_info.minute)+'_'+str(time_info.second)+'_'\
+                    +str(time_info.microsecond)+'.csv'
         f = open('game_record/'+file_name, 'w', newline='')
         writer = csv.writer(f)
         for action in self.action_history:

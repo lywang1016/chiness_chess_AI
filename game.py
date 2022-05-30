@@ -1,68 +1,230 @@
 import time
 from board import ChessBoard
 from display import GUI
-from player import HumanPlayer
+from player import HumanPlayer, AIPlayer
 
-def main():
-    chess_board = ChessBoard()
-    gui = GUI()
-    red = True
-    r_human = HumanPlayer('r')
-    b_human = HumanPlayer('b')
-    while True:
-        while not chess_board.done:
-            if red:
-                gui.update(chess_board.board_states(), 'r')
+class Game():
+    def __init__(self, r_type, b_type, if_record, if_gui=True, gui_update=0.1):
+        self.r_type = r_type
+        self.b_type = b_type
+        self.if_gui = if_gui
+        self.gui_update = gui_update
+        self.if_record = if_record
+        self.red = True
+        self.chess_board = ChessBoard(record=if_record)
+        if r_type == 'human' and b_type == 'human': # human vs human
+            self.if_gui = True
+            self.gui = GUI()
+            self.r_player = HumanPlayer('r')
+            self.b_player = HumanPlayer('b')
+        elif r_type == 'human':                     # human vs AI
+            self.if_gui = True                    
+            self.gui = GUI()
+            self.r_player = HumanPlayer('r')
+            self.b_player = AIPlayer('b')
+        elif b_type == 'human':                     # AI vs human
+            self.if_gui = True                  
+            self.gui = GUI()
+            self.r_player = AIPlayer('r')
+            self.b_player = HumanPlayer('b')
+        else:                                       # AI vs AI
+            if self.if_gui:
+                self.gui = GUI()
+            self.r_player = AIPlayer('r')
+            self.b_player = AIPlayer('b')
+    
+    def reset(self):
+        self.chess_board.reset_board()
+        self.r_player.reset()
+        self.b_player.reset()
+        self.red = True
+
+    def episode(self):
+        if self.r_type == 'human' and self.b_type == 'human':   # human vs human
+            self.__human_human_episode()
+        elif self.r_type == 'human':                            # human vs AI
+            self.__human_ai_episode()
+        elif self.b_type == 'human':                            # AI vs human
+            self.__human_ai_episode()
+        else:                                                   # AI vs AI
+            self.__ai_ai_episode()
+
+    def __human_human_episode(self):
+        self.reset()
+        while not self.chess_board.done:
+            if self.red:
+                self.gui.update(self.chess_board.board_states(), 'r')
             else:
-                gui.update(chess_board.board_states(), 'b')
-            time.sleep(0.1)
-            info, position = gui.check_event()
+                self.gui.update(self.chess_board.board_states(), 'b')
+            time.sleep(self.gui_update)
+            info, position = self.gui.check_event()
 
             if info == 'reset':
                 print('reset')
                 break
             elif info == 'turn180':
                 print('turn180')
-                chess_board.rotate_board()
-                red = not red
-                r_human.reset()
-                b_human.reset()
+                self.chess_board.rotate_board()
+                self.red = not self.red
+                self.r_player.reset()
+                self.b_player.reset()
             elif info == 'grid':
-                if red: #check whos turn (red move)
-                    if r_human.stage == 'pick':
-                        r_human.select_piece(position)
-                    if r_human.stage == 'go':
-                        r_human.action_valid(position)
-                        if r_human.move:
-                            chess_board.move_piece(r_human.current_piece_posi, r_human.move)
-                            red = not red
+                if self.red: #check whos turn 
+                    if self.r_player.stage == 'pick':
+                        self.r_player.select_piece(position)
+                    if self.r_player.stage == 'go':
+                        self.r_player.action_valid(position)
+                        if self.r_player.move:
+                            self.chess_board.move_piece(self.r_player.current_piece_posi, self.r_player.move)
+                            self.red = not self.red
                 else:   #black move
-                    if b_human.stage == 'pick':
-                        b_human.select_piece(position)
-                    if b_human.stage == 'go':
-                        b_human.action_valid(position)
-                        if b_human.move:
-                            chess_board.move_piece(b_human.current_piece_posi, b_human.move)
-                            red = not red
+                    if self.b_player.stage == 'pick':
+                        self.b_player.select_piece(position)
+                    if self.b_player.stage == 'go':
+                        self.b_player.action_valid(position)
+                        if self.b_player.move:
+                            self.chess_board.move_piece(self.b_player.current_piece_posi, self.b_player.move)
+                            self.red = not self.red
             else:
-                if red:
-                    r_human.update_board(chess_board.board_states())
-                    if not r_human.check_moves():
-                        chess_board.win = 'b'
+                if self.red:
+                    self.r_player.update_board(self.chess_board.board_states())
+                    if not self.r_player.check_moves():
+                        self.chess_board.set_done('b')
                         break
                 else:
-                    b_human.update_board(chess_board.board_states())
-                    if not b_human.check_moves():
-                        chess_board.win = 'r'
+                    self.b_player.update_board(self.chess_board.board_states())
+                    if not self.b_player.check_moves():
+                        self.chess_board.set_done('r')
                         break
-        if chess_board.win == 'r':
+        if self.chess_board.win == 'r':
             print('Red Win!')
         else:
             print('Black Win!')
-        chess_board.reset_board()
-        r_human.reset()
-        b_human.reset()
-        red = True
+        
+        if self.if_record:
+            self.chess_board.fill_dataset()
+            # use the dataset
+            self.chess_board.save_csv()
 
-if __name__ == '__main__':
-    main()
+    def __human_ai_episode(self):
+        self.reset()
+        while not self.chess_board.done:
+            if self.red:
+                self.gui.update(self.chess_board.board_states(), 'r')
+            else:
+                self.gui.update(self.chess_board.board_states(), 'b')
+            time.sleep(self.gui_update)
+            info, position = self.gui.check_event()
+
+            if info == 'reset':
+                print('reset')
+                break
+            elif info == 'turn180':
+                print('turn180')
+                self.chess_board.rotate_board()
+                self.red = not self.red
+                self.r_player.reset()
+                self.b_player.reset()
+            elif info == 'grid':
+                if self.r_type == 'human':
+                    if self.red: #check whos turn
+                        if self.r_player.stage == 'pick':
+                            self.r_player.select_piece(position)
+                        if self.r_player.stage == 'go':
+                            self.r_player.action_valid(position)
+                            if self.r_player.move:
+                                self.chess_board.move_piece(self.r_player.current_piece_posi, self.r_player.move)
+                                self.red = not self.red
+                else:
+                    if not self.red: #check whos turn 
+                        if self.b_player.stage == 'pick':
+                            self.b_player.select_piece(position)
+                        if self.b_player.stage == 'go':
+                            self.b_player.action_valid(position)
+                            if self.b_player.move:
+                                self.chess_board.move_piece(self.b_player.current_piece_posi, self.b_player.move)
+                                self.red = not self.red
+            else:
+                if self.r_type == 'human':
+                    if self.red:
+                        self.r_player.update_board(self.chess_board.board_states())
+                        if not self.r_player.check_moves():
+                            self.chess_board.set_done('b')
+                            break
+                    else:
+                        self.b_player.update_board(self.chess_board.board_states())
+                        if not self.b_player.check_moves():
+                            self.chess_board.set_done('r')
+                            break
+                        posi, move = self.b_player.random_action()
+                        self.chess_board.move_piece(posi, move)
+                        self.red = not self.red
+                else:
+                    if not self.red:
+                        self.b_player.update_board(self.chess_board.board_states())
+                        if not self.b_player.check_moves():
+                            self.chess_board.set_done('r')
+                            break
+                    else:
+                        self.r_player.update_board(self.chess_board.board_states())
+                        if not self.r_player.check_moves():
+                            self.chess_board.set_done('b')
+                            break
+                        posi, move = self.r_player.random_action()
+                        self.chess_board.move_piece(posi, move)
+                        self.red = not self.red
+        if self.chess_board.win == 'r':
+            print('Red Win!')
+        else:
+            print('Black Win!')
+
+        if self.if_record:
+            self.chess_board.fill_dataset()
+            # use the dataset
+            self.chess_board.save_csv()
+
+    def __ai_ai_episode(self):
+        self.reset()
+        while not self.chess_board.done:
+            if self.if_gui:
+                if self.red:
+                    self.gui.update(self.chess_board.board_states(), 'r')
+                else:
+                    self.gui.update(self.chess_board.board_states(), 'b')
+                time.sleep(self.gui_update)
+                info, position = self.gui.check_event()
+                if info == 'reset':
+                    print('reset')
+                    break
+                if info == 'turn180':
+                    print('turn180')
+                    self.chess_board.rotate_board()
+                    self.red = not self.red
+                    self.r_player.reset()
+                    self.b_player.reset()
+
+            if self.red:
+                self.r_player.update_board(self.chess_board.board_states())
+                if not self.r_player.check_moves():
+                    self.chess_board.set_done('b')
+                    break
+                posi, move = self.r_player.random_action()
+                self.chess_board.move_piece(posi, move)
+                self.red = not self.red
+            else:
+                self.b_player.update_board(self.chess_board.board_states())
+                if not self.b_player.check_moves():
+                    self.chess_board.set_done('r')
+                    break
+                posi, move = self.b_player.random_action()
+                self.chess_board.move_piece(posi, move)
+                self.red = not self.red
+        if self.chess_board.win == 'r':
+            print('Red Win!')
+        else:
+            print('Black Win!')
+
+        if self.if_record:
+            self.chess_board.fill_dataset()
+            # use the dataset
+            self.chess_board.save_csv()
