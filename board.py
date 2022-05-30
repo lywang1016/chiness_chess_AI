@@ -1,6 +1,6 @@
 import copy
 import numpy as np
-from utils import board_turn180, board_to_key, key_to_board
+from utils import board_turn180, board_to_key
 from constant import piece_values
 
 class ChessBoard:
@@ -12,6 +12,7 @@ class ChessBoard:
         self.dataset = {}
         self.red_history = []
         self.black_history = []
+        self.action_history = []
         self.reset_board()
 
     def reset_board(self):
@@ -54,6 +55,7 @@ class ChessBoard:
         self.red_history = []
         self.black_history = []
         self.dataset = {}
+        self.action_history = []
 
     def set_done(self, win_color):
         self.win = win_color
@@ -92,6 +94,7 @@ class ChessBoard:
     
     def move_piece(self, position, move, color):
         if self.record:
+            self.action_history.append((position, move))
             if color == 'r':
                 self.red_history.append(board_to_key(self.board_states()))
             else:
