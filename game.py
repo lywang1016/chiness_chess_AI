@@ -66,6 +66,10 @@ class Game():
                 self.red = not self.red
                 self.r_player.reset()
                 self.b_player.reset()
+            elif info == 'tie':
+                print('mark as tie')
+                self.chess_board.set_done('t')
+                break
             elif info == 'grid':
                 if self.red: #check whos turn 
                     if self.r_player.stage == 'pick':
@@ -96,8 +100,10 @@ class Game():
                         break
         if self.chess_board.win == 'r':
             print('Red Win!')
-        else:
+        if self.chess_board.win == 'b':
             print('Black Win!')
+        if self.chess_board.win == 't':
+            print('Tie!')
         
         if self.if_record:
             self.chess_board.fill_dataset()
@@ -123,6 +129,10 @@ class Game():
                 self.red = not self.red
                 self.r_player.reset()
                 self.b_player.reset()
+            elif info == 'tie':
+                print('mark as tie')
+                self.chess_board.set_done('t')
+                break
             elif info == 'grid':
                 if self.r_type == 'human':
                     if self.red: #check whos turn
@@ -173,8 +183,10 @@ class Game():
                         self.red = not self.red
         if self.chess_board.win == 'r':
             print('Red Win!')
-        else:
+        if self.chess_board.win == 'b':
             print('Black Win!')
+        if self.chess_board.win == 't':
+            print('Tie!')
 
         if self.if_record:
             self.chess_board.fill_dataset()
@@ -183,7 +195,14 @@ class Game():
 
     def __ai_ai_episode(self):
         self.reset()
+        max_step = 1000
+        step = 0
         while not self.chess_board.done:
+            if step > max_step:
+                print('Reach maximum step! Mark as tie!')
+                self.chess_board.set_done('t')
+                break
+
             if self.if_gui:
                 if self.red:
                     self.gui.update(self.chess_board.board_states(), 'r')
@@ -200,6 +219,10 @@ class Game():
                     self.red = not self.red
                     self.r_player.reset()
                     self.b_player.reset()
+                if info == 'tie':
+                    print('mark as tie')
+                    self.chess_board.set_done('t')
+                    break
 
             if self.red:
                 self.r_player.update_board(self.chess_board.board_states())
@@ -217,10 +240,15 @@ class Game():
                 posi, move = self.b_player.random_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
+            step += 1
+
+
         if self.chess_board.win == 'r':
             print('Red Win!')
-        else:
+        if self.chess_board.win == 'b':
             print('Black Win!')
+        if self.chess_board.win == 't':
+            print('Tie!')
 
         if self.if_record:
             self.chess_board.fill_dataset()
