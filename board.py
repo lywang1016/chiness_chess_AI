@@ -9,6 +9,7 @@ class ChessBoard:
     def __init__(self, record = False):
         self.record = record
         self.board = np.zeros((10, 9))
+        self.red = True
         self.done = False
         self.win = None
         self.dataset = {}
@@ -52,6 +53,7 @@ class ChessBoard:
         self.board[9][7] = piece_values['r_knight']
         self.board[9][8] = piece_values['r_rook']
         self.done = False
+        self.red = True
         self.win = None
         self.dataset = {}
         self.red_history = []
@@ -94,13 +96,14 @@ class ChessBoard:
     def rotate_board(self):
         self.board = board_turn180(self.board)
     
-    def move_piece(self, position, move, color):
+    def move_piece(self, position, move):
         if self.record:
             self.action_history.append((position, move))
-            if color == 'r':
+            if self.red:
                 self.red_history.append(board_to_key(self.board_states()))
             else:
                 self.black_history.append(board_to_key(board_turn180(self.board_states())))
+            self.red = not self.red
 
         value = self.board[position[0]][position[1]]
         self.board[position[0]][position[1]] = 0
