@@ -25,6 +25,7 @@ class GUI:
         self.screen.blit(self.side_img, (0, 0))
         self.screen.blit(self.side_img, (360, 0))
         self.screen.blit(self.background_img, (10, 10))
+        self.screen.blit(button_imgs['tie'], (569, 185))
         self.screen.blit(button_imgs['reset'], (545, 240))
         self.screen.blit(button_imgs['turn180'], (545, 300))
 
@@ -65,6 +66,8 @@ class GUI:
                     return 'reset', (-1, -1)
                 elif mouse_x < 665 and mouse_x > 515 and mouse_y < 310 and mouse_y > 270:
                     return 'turn180', (-1, -1)
+                elif mouse_x < 640 and mouse_x > 540 and mouse_y < 200 and mouse_y > 155:
+                    return 'tie', (-1, -1)
                 else:
                     print(mouse_x)
                     print(mouse_y)

@@ -25,7 +25,8 @@ round_imgs = {
 
 button_imgs = {
     'turn180': pygame.image.load("img/turn180.jpg"),
-    'reset': pygame.image.load("img/reset.jpg")
+    'reset': pygame.image.load("img/reset.jpg"),
+    'tie':pygame.image.load("img/tie.png")
 }
 
 piece_values = {
