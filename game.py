@@ -42,9 +42,7 @@ class Game():
     def episode(self):
         if self.r_type == 'human' and self.b_type == 'human':   # human vs human
             self.__human_human_episode()
-        elif self.r_type == 'human':                            # human vs AI
-            self.__human_ai_episode()
-        elif self.b_type == 'human':                            # AI vs human
+        elif self.r_type == 'human' or self.b_type == 'human':  # human vs AI or AI vs human
             self.__human_ai_episode()
         else:                                                   # AI vs AI
             self.__ai_ai_episode()
