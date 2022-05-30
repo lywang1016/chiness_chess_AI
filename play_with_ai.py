@@ -149,6 +149,7 @@ def human_vs_ai():
             print('Black Win!')
         chess_board.fill_dataset()
         print(chess_board.dataset)
+        chess_board.save_csv()
         chess_board.reset_board()
         ai.reset()
         human.reset()

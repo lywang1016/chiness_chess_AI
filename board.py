@@ -1,4 +1,6 @@
 import copy
+import csv
+import datetime
 import numpy as np
 from utils import board_turn180, board_to_key
 from constant import piece_values
@@ -140,3 +142,14 @@ class ChessBoard:
                         self.dataset[key] = [0, 1, 0]
                     else:
                         self.dataset[key][1] += 1
+
+    def save_csv(self):
+        time_info = datetime.datetime.now()
+        file_name = str(time_info.year)+'_'+str(time_info.month)+'_'+str(time_info.day)+'-'\
+                    +str(time_info.hour)+'_'+str(time_info.minute)+'_'+str(time_info.second)+'.csv'
+        f = open('game_record/'+file_name, 'w', newline='')
+        writer = csv.writer(f)
+        for action in self.action_history:
+            row = [action[0][0], action[0][1], action[1][0], action[1][1]]
+            writer.writerow(row)
+        f.close()
