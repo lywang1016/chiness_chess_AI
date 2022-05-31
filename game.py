@@ -4,12 +4,13 @@ from display import GUI
 from player import HumanPlayer, AIPlayer
 
 class Game():
-    def __init__(self, r_type, b_type, if_record, if_gui=True, gui_update=0.1):
+    def __init__(self, r_type, b_type, if_record=False, if_dataset=False, if_gui=True, gui_update=0.1):
         self.r_type = r_type
         self.b_type = b_type
         self.if_gui = if_gui
         self.gui_update = gui_update
         self.if_record = if_record
+        self.if_dataset = if_dataset
         self.red = True
         self.chess_board = ChessBoard()
         if r_type == 'human' and b_type == 'human': # human vs human
@@ -106,9 +107,9 @@ class Game():
             print('Tie!')
         
         if self.if_record:
-            self.chess_board.fill_dataset()
-            # use the dataset
             self.chess_board.save_csv()
+        if self.if_dataset:
+            self.chess_board.fill_dataset()
 
     def __human_ai_episode(self):
         self.reset()
@@ -193,9 +194,9 @@ class Game():
             print('Tie!')
 
         if self.if_record:
-            self.chess_board.fill_dataset()
-            # use the dataset
             self.chess_board.save_csv()
+        if self.if_dataset:
+            self.chess_board.fill_dataset()
 
     def __ai_ai_episode(self):
         self.reset()
@@ -259,6 +260,6 @@ class Game():
             print('Tie!')
 
         if self.if_record:
-            self.chess_board.fill_dataset()
-            # use the dataset
             self.chess_board.save_csv()
+        if self.if_dataset:
+            self.chess_board.fill_dataset()
