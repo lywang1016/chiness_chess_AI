@@ -4,7 +4,7 @@ from board import ChessBoard
 from display import GUI
 
 def actions_replay(csv_path):
-    chess_board = ChessBoard(record=False)
+    chess_board = ChessBoard()
     gui_update = 1.0
     gui = GUI()
     red = True
@@ -39,4 +39,4 @@ def actions_replay(csv_path):
         gui.check_event()
 
 if __name__ == '__main__':
-    actions_replay('game_record/2022_5_29-21_36_30_529864.csv')
+    actions_replay('game_record/2022_5_31-11_9_16_486123.csv')
