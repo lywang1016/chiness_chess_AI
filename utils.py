@@ -36,3 +36,11 @@ def print_dataset(dataset):
                 row_str += '\t'
             print(row_str + '\n')
         print('#############################################################')
+
+def merge_dataset(dataset1, dataset2): # merge dataset2 data into dataset1
+    for key in dataset2:
+        if key not in dataset1:
+            dataset1[key] = dataset2[key]
+        else:
+            for i in range(3):
+                dataset1[key][i] += dataset2[key][i]
