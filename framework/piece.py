@@ -1,5 +1,5 @@
 import copy
-from constant import piece_values
+from framework.constant import piece_values
 
 class Piece:
     def __init__(self, name, color, position):

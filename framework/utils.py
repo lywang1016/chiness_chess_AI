@@ -1,5 +1,5 @@
 import numpy as np
-from constant import values_piece2
+from framework.constant import values_piece2
 
 def rotate_action(posi, move):
     move_ = (-move[0], -move[1])

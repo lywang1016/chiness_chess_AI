@@ -1,7 +1,7 @@
 import time
-from board import ChessBoard
-from display import GUI
-from player import HumanPlayer, AIPlayer
+from framework.board import ChessBoard
+from framework.display import GUI
+from framework.player import HumanPlayer, AIPlayer
 
 class Game():
     def __init__(self, r_type, b_type, if_record=False, if_dataset=False, if_gui=True, gui_update=0.1):

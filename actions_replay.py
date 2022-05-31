@@ -1,7 +1,7 @@
 import csv
 import time
-from board import ChessBoard
-from display import GUI
+from framework.board import ChessBoard
+from framework.display import GUI
 
 def actions_replay(csv_path):
     chess_board = ChessBoard()

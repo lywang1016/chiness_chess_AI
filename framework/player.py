@@ -1,8 +1,8 @@
 import copy
 import numpy as np
-from piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
-from utils import rotate_action, board_turn180, board_to_key
-from constant import piece_values
+from framework.piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
+from framework.utils import rotate_action, board_turn180, board_to_key
+from framework.constant import piece_values
 
 class Player():
     def __init__(self, color):

@@ -2,8 +2,8 @@ import copy
 import csv
 import datetime
 import numpy as np
-from utils import rotate_action, board_turn180, board_to_key
-from constant import piece_values
+from framework.utils import rotate_action, board_turn180, board_to_key
+from framework.constant import piece_values
 
 class ChessBoard:
     def __init__(self):

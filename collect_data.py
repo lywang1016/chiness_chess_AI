@@ -1,7 +1,7 @@
 import h5py
 import numpy as np
-from game import Game
-from utils import merge_dataset, board_to_key, key_to_board
+from framework.game import Game
+from framework.utils import merge_dataset, board_to_key, key_to_board
 
 def main():
     # Load previous dataset
@@ -20,9 +20,9 @@ def main():
     fy.close()
 
     # game = Game(r_type='human', b_type='human', if_record=False, if_dataset=True)
-    # game = Game(r_type='ai', b_type='ai', if_record=False, if_dataset=True, if_gui=False, gui_update=0.5)
-    # game = Game(r_type='human', b_type='ai', if_record=False, if_dataset=True)
-    game = Game(r_type='ai', b_type='human', if_record=True, if_dataset=True)
+    # game = Game(r_type='ai', b_type='ai', if_record=True, if_dataset=True, if_gui=False, gui_update=0.5)
+    game = Game(r_type='human', b_type='ai', if_record=False, if_dataset=True)
+    # game = Game(r_type='ai', b_type='human', if_record=True, if_dataset=True)
 
     for i in range(10):
         game.episode()
