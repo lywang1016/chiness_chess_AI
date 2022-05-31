@@ -22,3 +22,17 @@ def key_to_board(key):
         for j in range(9):
             board[i][j] = key[i][j]
     return board
+
+def print_dataset(dataset):
+    for key in dataset:
+        print(dataset[key])
+        for i in range(10):
+            row_str = 'Line ' + str(i) + ': '
+            for j in range(9):
+                if key[i][j] != 0:
+                    row_str += str(key[i][j])
+                else:
+                    row_str += '    '
+                row_str += '\t'
+            print(row_str + '\n')
+        print('#############################################################')
