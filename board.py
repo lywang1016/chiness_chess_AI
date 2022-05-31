@@ -6,8 +6,7 @@ from utils import board_turn180, board_to_key
 from constant import piece_values
 
 class ChessBoard:
-    def __init__(self, record = False):
-        self.record = record
+    def __init__(self):
         self.board = np.zeros((10, 9))
         self.red = True
         self.done = False
@@ -97,13 +96,12 @@ class ChessBoard:
         self.board = board_turn180(self.board)
     
     def move_piece(self, position, move):
-        if self.record:
-            self.action_history.append((position, move))
-            if self.red:
-                self.red_history.append(board_to_key(self.board_states()))
-            else:
-                self.black_history.append(board_to_key(board_turn180(self.board_states())))
-            self.red = not self.red
+        self.action_history.append((position, move))
+        if self.red:
+            self.red_history.append(board_to_key(self.board_states()))
+        else:
+            self.black_history.append(board_to_key(board_turn180(self.board_states())))
+        self.red = not self.red
 
         value = self.board[position[0]][position[1]]
         self.board[position[0]][position[1]] = 0
@@ -111,40 +109,39 @@ class ChessBoard:
         self.check_done()
 
     def fill_dataset(self):
-        if self.record:
-            if self.win == 'r':
-                for key in self.red_history:
-                    if key not in self.dataset:
-                        self.dataset[key] = [1, 0, 0]
-                    else:
-                        self.dataset[key][0] += 1
-                for key in self.black_history:
-                    if key not in self.dataset:
-                        self.dataset[key] = [0, 0, 1]
-                    else:
-                        self.dataset[key][2] += 1
-            if self.win == 'b':
-                for key in self.black_history:
-                    if key not in self.dataset:
-                        self.dataset[key] = [1, 0, 0]
-                    else:
-                        self.dataset[key][0] += 1
-                for key in self.red_history:
-                    if key not in self.dataset:
-                        self.dataset[key] = [0, 0, 1]
-                    else:
-                        self.dataset[key][2] += 1
-            if self.win == 't':
-                for key in self.black_history:
-                    if key not in self.dataset:
-                        self.dataset[key] = [0, 1, 0]
-                    else:
-                        self.dataset[key][1] += 1
-                for key in self.red_history:
-                    if key not in self.dataset:
-                        self.dataset[key] = [0, 1, 0]
-                    else:
-                        self.dataset[key][1] += 1
+        if self.win == 'r':
+            for key in self.red_history:
+                if key not in self.dataset:
+                    self.dataset[key] = [1, 0, 0]
+                else:
+                    self.dataset[key][0] += 1
+            for key in self.black_history:
+                if key not in self.dataset:
+                    self.dataset[key] = [0, 0, 1]
+                else:
+                    self.dataset[key][2] += 1
+        if self.win == 'b':
+            for key in self.black_history:
+                if key not in self.dataset:
+                    self.dataset[key] = [1, 0, 0]
+                else:
+                    self.dataset[key][0] += 1
+            for key in self.red_history:
+                if key not in self.dataset:
+                    self.dataset[key] = [0, 0, 1]
+                else:
+                    self.dataset[key][2] += 1
+        if self.win == 't':
+            for key in self.black_history:
+                if key not in self.dataset:
+                    self.dataset[key] = [0, 1, 0]
+                else:
+                    self.dataset[key][1] += 1
+            for key in self.red_history:
+                if key not in self.dataset:
+                    self.dataset[key] = [0, 1, 0]
+                else:
+                    self.dataset[key][1] += 1
 
     def save_csv(self):
         time_info = datetime.datetime.now()

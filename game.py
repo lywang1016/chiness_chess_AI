@@ -11,7 +11,7 @@ class Game():
         self.gui_update = gui_update
         self.if_record = if_record
         self.red = True
-        self.chess_board = ChessBoard(record=if_record)
+        self.chess_board = ChessBoard()
         if r_type == 'human' and b_type == 'human': # human vs human
             self.if_gui = True
             self.gui = GUI()

@@ -140,6 +140,8 @@ class AIPlayer(Player):
         self.current_piece_posi = None
         self.cadidate_move = []
         self.all_move = {}
+        self.last5board = []
+        self.last5actions = []
 
     def reset(self):
         self.current_board = None
@@ -147,8 +149,10 @@ class AIPlayer(Player):
         self.current_piece_posi = None
         self.cadidate_move = []
         self.all_move = {}
+        self.last5board = []
+        self.last5actions = []
 
-    def update_board(self, board):
+    def update_board(self, board, last5board, last5actions):
         if self.color == 'b':       # rotate board
             self.current_board = board_turn180(board)
         else:
