@@ -1,4 +1,5 @@
 import numpy as np
+from constant import values_piece2
 
 def rotate_action(posi, move):
     move_ = (-move[0], -move[1])
@@ -27,15 +28,19 @@ def print_dataset(dataset):
     for key in dataset:
         print(dataset[key])
         for i in range(10):
-            row_str = 'Line ' + str(i) + ': '
+            row_str = ''
             for j in range(9):
-                if key[i][j] != 0:
-                    row_str += str(key[i][j])
-                else:
-                    row_str += '    '
-                row_str += '\t'
-            print(row_str + '\n')
-        print('#############################################################')
+                row_str += values_piece2[key[i][j]]
+            print(row_str)
+        print('##################')
+
+def print_board(board):
+    for i in range(10):
+        row_str = ''
+        for j in range(9):
+            row_str += values_piece2[board[i][j]]
+        print(row_str)
+    print('##################')
 
 def merge_dataset(dataset1, dataset2): # merge dataset2 data into dataset1
     for key in dataset2:
