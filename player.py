@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 from piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
-from utils import rotate_action, board_turn180
+from utils import rotate_action, board_turn180, board_to_key
 from constant import piece_values
 
 class Player():
@@ -140,8 +140,8 @@ class AIPlayer(Player):
         self.current_piece_posi = None
         self.cadidate_move = []
         self.all_move = {}
-        self.last5board = []
-        self.last5actions = []
+        self.past_board = []
+        self.past_actions = []
 
     def reset(self):
         self.current_board = None
@@ -149,14 +149,16 @@ class AIPlayer(Player):
         self.current_piece_posi = None
         self.cadidate_move = []
         self.all_move = {}
-        self.last5board = []
-        self.last5actions = []
+        self.past_board = []
+        self.past_actions = []
 
-    def update_board(self, board, last5board, last5actions):
+    def update_board(self, board, past_board, past_actions):
         if self.color == 'b':       # rotate board
             self.current_board = board_turn180(board)
         else:
             self.current_board = board
+        self.past_board = past_board
+        self.past_actions = past_actions
 
     def check_moves(self):
         self.all_move = {}
@@ -205,6 +207,21 @@ class AIPlayer(Player):
                     self.all_move = {}
                     self.all_move[posi] = [move]
                     return True
+
+        current_key = board_to_key(copy.deepcopy(self.current_board)) # remove the previous same action
+        if current_key in self.past_board:
+            idx = self.past_board.index(current_key)
+            previous_posi = self.past_actions[idx][0]
+            if previous_posi in self.all_move:
+                moves = self.all_move[previous_posi]
+                previous_move = self.past_actions[idx][1]
+                if previous_move in moves:
+                    moves.remove(previous_move)
+                    if len(moves) > 0:
+                        self.all_move[previous_posi] = moves
+                    else:
+                        self.all_move.pop(previous_posi, None)
+
         if len(self.all_move) > 0:
             return True
         else:

@@ -2,7 +2,7 @@ import copy
 import csv
 import datetime
 import numpy as np
-from utils import board_turn180, board_to_key
+from utils import rotate_action, board_turn180, board_to_key
 from constant import piece_values
 
 class ChessBoard:
@@ -15,6 +15,8 @@ class ChessBoard:
         self.red_history = []
         self.black_history = []
         self.action_history = []
+        self.red_action_history = []
+        self.black_action_history = []
         self.reset_board()
 
     def reset_board(self):
@@ -59,6 +61,8 @@ class ChessBoard:
         self.black_history = []
         self.dataset = {}
         self.action_history = []
+        self.red_action_history = []
+        self.black_action_history = []
 
     def set_done(self, win_color):
         self.win = win_color
@@ -99,8 +103,10 @@ class ChessBoard:
         self.action_history.append((position, move))
         if self.red:
             self.red_history.append(board_to_key(self.board_states()))
+            self.red_action_history.append((position, move))
         else:
             self.black_history.append(board_to_key(board_turn180(self.board_states())))
+            self.black_action_history.append((rotate_action(position, move)))
         self.red = not self.red
 
         value = self.board[position[0]][position[1]]

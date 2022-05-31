@@ -160,7 +160,9 @@ class Game():
                             self.chess_board.set_done('b')
                             break
                     else:
-                        self.b_player.update_board(self.chess_board.board_states())
+                        self.b_player.update_board(self.chess_board.board_states(), \
+                                                    self.chess_board.black_history, \
+                                                    self.chess_board.black_action_history)
                         if not self.b_player.check_moves():
                             self.chess_board.set_done('r')
                             break
@@ -174,7 +176,9 @@ class Game():
                             self.chess_board.set_done('r')
                             break
                     else:
-                        self.r_player.update_board(self.chess_board.board_states())
+                        self.r_player.update_board(self.chess_board.board_states(), \
+                                                    self.chess_board.red_history, \
+                                                    self.chess_board.red_action_history)
                         if not self.r_player.check_moves():
                             self.chess_board.set_done('b')
                             break
@@ -225,7 +229,9 @@ class Game():
                     break
 
             if self.red:
-                self.r_player.update_board(self.chess_board.board_states())
+                self.r_player.update_board(self.chess_board.board_states(), \
+                                            self.chess_board.red_history, \
+                                            self.chess_board.red_action_history)
                 if not self.r_player.check_moves():
                     self.chess_board.set_done('b')
                     break
@@ -233,7 +239,9 @@ class Game():
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
             else:
-                self.b_player.update_board(self.chess_board.board_states())
+                self.b_player.update_board(self.chess_board.board_states(), \
+                                            self.chess_board.black_history, \
+                                            self.chess_board.black_action_history)
                 if not self.b_player.check_moves():
                     self.chess_board.set_done('r')
                     break
