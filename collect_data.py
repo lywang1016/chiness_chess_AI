@@ -1,30 +1,27 @@
 import h5py
 import numpy as np
+from os.path import exists
 from framework.game import Game
 from framework.utils import merge_dataset, board_to_key, key_to_board
 
 def main():
-    # Load previous dataset
-    fx = h5py.File("dataset/x.hdf5", "a")
-    fx.close()
-    fy = h5py.File("dataset/y.hdf5", "a")
-    fy.close()
     dataset = {}
-    fx = h5py.File('dataset/x.hdf5', 'r')
-    fy = h5py.File('dataset/y.hdf5', 'r')
-    for key in fx:
-        board = np.array(fx[key])
-        data = np.array(fy[key])
-        dataset[board_to_key(board)] = data
-    fx.close()
-    fy.close()
+    if exists('dataset/x.hdf5') and exists('dataset/y.hdf5'):
+        fx = h5py.File('dataset/x.hdf5', 'r')
+        fy = h5py.File('dataset/y.hdf5', 'r')
+        for key in fx:
+            board = np.array(fx[key])
+            data = np.array(fy[key])
+            dataset[board_to_key(board)] = data
+        fx.close()
+        fy.close()
 
     # game = Game(r_type='human', b_type='human', if_record=False, if_dataset=True)
-    # game = Game(r_type='ai', b_type='ai', if_record=True, if_dataset=True, if_gui=False, gui_update=0.5)
-    game = Game(r_type='human', b_type='ai', if_record=False, if_dataset=True)
+    game = Game(r_type='ai', b_type='ai', if_record=True, if_dataset=True, if_gui=False, gui_update=0.5)
+    # game = Game(r_type='human', b_type='ai', if_record=False, if_dataset=True)
     # game = Game(r_type='ai', b_type='human', if_record=True, if_dataset=True)
 
-    for i in range(10):
+    for i in range(100):
         game.episode()
         merge_dataset(dataset, game.chess_board.dataset)
 
