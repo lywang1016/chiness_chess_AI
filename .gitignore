@@ -1,6 +1,7 @@
 # My data file
 *.csv
 *.hdf5
+*.pth
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
