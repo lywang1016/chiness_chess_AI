@@ -1,8 +1,13 @@
 import copy
+import yaml
+import random
 import numpy as np
+import torch
+from heapq import heapify, heappop, heappush
 from framework.piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
 from framework.utils import rotate_action, board_turn180, board_to_key
 from framework.constant import piece_values
+from ai.network import DQN
 
 class Player():
     def __init__(self, color):
@@ -132,8 +137,9 @@ class HumanPlayer(Player):
             self.move = None
 
 class AIPlayer(Player):
-    def __init__(self, color):
+    def __init__(self, color, explore_rate=1):
         self.color = color
+        self.explore_rate = explore_rate
         self.faction = 1
         self.current_board = None
         self.current_piece_value = 0
@@ -142,6 +148,14 @@ class AIPlayer(Player):
         self.all_move = {}
         self.past_board = []
         self.past_actions = []
+        if self.explore_rate < 1:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.q_star = DQN().to(self.device)
+            with open('ai/config.yaml') as f:
+                self.config = yaml.load(f, Loader=yaml.FullLoader)
+            checkpoint = torch.load(self.config['save_model_path'])
+            self.q_star.load_state_dict(checkpoint['model_state_dict'])
+            self.q_star.eval()
 
     def reset(self):
         self.current_board = None
@@ -151,6 +165,10 @@ class AIPlayer(Player):
         self.all_move = {}
         self.past_board = []
         self.past_actions = []
+        if self.explore_rate < 1:
+            checkpoint = torch.load(self.config['save_model_path'])
+            self.q_star.load_state_dict(checkpoint['model_state_dict'])
+            self.q_star.eval()
 
     def update_board(self, board, past_board, past_actions):
         if self.color == 'b':       # rotate board
@@ -227,7 +245,7 @@ class AIPlayer(Player):
         else:
             return False
 
-    def random_action(self):
+    def __random_action(self):
         posi_num = len(self.all_move)
         posi_idx = np.random.randint(posi_num)
         idx = 0
@@ -247,3 +265,38 @@ class AIPlayer(Player):
         if self.color == 'b':       # rotate move
             return rotate_action(posi, move)
         return posi, move
+
+    def __exploit_action(self):
+        queue = []
+        heapify(queue)
+        for posi in self.all_move:
+            for move in self.all_move[posi]:
+                next_board = copy.deepcopy(self.current_board)
+                value = next_board[posi[0]][posi[1]]
+                next_board[posi[0]][posi[1]] = 0
+                next_board[posi[0]+move[0]][posi[1]+move[1]] = value
+                state = torch.from_numpy(next_board).to(self.device)
+                if str(self.device) == 'cuda':
+                    state = state.view(1, 1, 10, 9).type(torch.cuda.FloatTensor)
+                else:
+                    state = state.view(1, 1, 10, 9).type(torch.FloatTensor)
+                win_rate = self.q_star(state)
+                win_rate = win_rate.cpu().detach().numpy()[0][0]
+                heappush(queue, (-win_rate, (posi, move)))
+        value, action = heappop(queue)
+        if self.color == 'b':       # rotate move
+            return rotate_action(action[0], action[1])
+        return action[0], action[1]
+    
+    def ai_action(self):
+        if self.explore_rate == 0:
+            return self.__exploit_action()
+        elif self.explore_rate == 1:
+            return self.__random_action()
+        else:
+            sample = random.random()
+            if sample > self.explore_rate:
+                return self.__exploit_action()
+            else:
+                return self.__random_action()
+

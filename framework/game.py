@@ -4,7 +4,8 @@ from framework.display import GUI
 from framework.player import HumanPlayer, AIPlayer
 
 class Game():
-    def __init__(self, r_type, b_type, if_record=False, if_dataset=False, if_gui=True, gui_update=0.1):
+    def __init__(self, r_type, b_type, if_record=False, if_dataset=False, 
+                 if_gui=True, gui_update=0.1, ai_explore_rate=1):
         self.r_type = r_type
         self.b_type = b_type
         self.if_gui = if_gui
@@ -19,20 +20,23 @@ class Game():
             self.r_player = HumanPlayer('r')
             self.b_player = HumanPlayer('b')
         elif r_type == 'human':                     # human vs AI
-            self.if_gui = True                    
+            self.if_gui = True  
+            self.ai_explore_rate = ai_explore_rate                  
             self.gui = GUI()
             self.r_player = HumanPlayer('r')
-            self.b_player = AIPlayer('b')
+            self.b_player = AIPlayer('b', self.ai_explore_rate)
         elif b_type == 'human':                     # AI vs human
-            self.if_gui = True                  
+            self.if_gui = True
+            self.ai_explore_rate = ai_explore_rate                   
             self.gui = GUI()
-            self.r_player = AIPlayer('r')
+            self.r_player = AIPlayer('r', self.ai_explore_rate)
             self.b_player = HumanPlayer('b')
         else:                                       # AI vs AI
             if self.if_gui:
                 self.gui = GUI()
-            self.r_player = AIPlayer('r')
-            self.b_player = AIPlayer('b')
+            self.ai_explore_rate = ai_explore_rate 
+            self.r_player = AIPlayer('r', self.ai_explore_rate)
+            self.b_player = AIPlayer('b', self.ai_explore_rate)
     
     def reset(self):
         self.chess_board.reset_board()
@@ -167,7 +171,7 @@ class Game():
                         if not self.b_player.check_moves():
                             self.chess_board.set_done('r')
                             break
-                        posi, move = self.b_player.random_action()
+                        posi, move = self.b_player.ai_action()
                         self.chess_board.move_piece(posi, move)
                         self.red = not self.red
                 else:
@@ -183,7 +187,7 @@ class Game():
                         if not self.r_player.check_moves():
                             self.chess_board.set_done('b')
                             break
-                        posi, move = self.r_player.random_action()
+                        posi, move = self.r_player.ai_action()
                         self.chess_board.move_piece(posi, move)
                         self.red = not self.red
         if self.chess_board.win == 'r':
@@ -236,7 +240,7 @@ class Game():
                 if not self.r_player.check_moves():
                     self.chess_board.set_done('b')
                     break
-                posi, move = self.r_player.random_action()
+                posi, move = self.r_player.ai_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
             else:
@@ -246,7 +250,7 @@ class Game():
                 if not self.b_player.check_moves():
                     self.chess_board.set_done('r')
                     break
-                posi, move = self.b_player.random_action()
+                posi, move = self.b_player.ai_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
             step += 1
