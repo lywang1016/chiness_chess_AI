@@ -1,8 +1,9 @@
 {
-    'lr_start': 0.00001,
-    'lr_end': 0.0000001,
+    'lr_start': 0.0001,
+    'lr_end': 0.000001,
     'lr_decay': 20,
     'batch_size': 32,
     'epoch': 200,
+    'save_every': 10,
     'save_model_path': 'model/model.pth'
 }

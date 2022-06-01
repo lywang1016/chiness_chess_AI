@@ -51,9 +51,9 @@ for epoch in range(config['epoch']):
     mean_loss = float(loss_sum) / num_batches
     print('Eopch '+str(epoch)+' mean loss is: '+str(mean_loss))
     loss_history.append(mean_loss)
-    save_path = config['save_model_path']
-    state = {'model_state_dict': q_star.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
-    torch.save(state, save_path)
+    if (epoch+1) % config['save_every'] == 0:
+        state = {'model_state_dict': q_star.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
+        torch.save(state, config['save_model_path'])
 
 # plot loss
 epoch = np.linspace(start=1, stop=len(loss_history), num=len(loss_history))
