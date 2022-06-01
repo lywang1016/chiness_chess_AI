@@ -1,5 +1,5 @@
 import yaml
-import time
+from os.path import exists
 import math
 import numpy as np
 from tqdm import tqdm
@@ -23,9 +23,12 @@ dataloader = DataLoader(dataset, batch_size=config['batch_size'], shuffle=True, 
 
 # load network, loss and define optimizer
 q_star = DQN().to(device)
-q_star.train()
 criterion = MyLoss().to(device)
 optimizer = torch.optim.Adam(q_star.parameters())
+if exists(config['save_model_path']):
+    checkpoint = torch.load(config['save_model_path'])
+    q_star.load_state_dict(checkpoint['model_state_dict'])
+q_star.train()
 
 # Train
 loss_history = []
