@@ -51,9 +51,10 @@ if exists('dataset/cur_idx.txt'):
 # training loop
 print('Start training!')
 for i in range(config['total_episode_num']):
-    print('---------------------- Episode '+str(i+1)+' ----------------------')
+    print('++++++++++++++++++++++ Episode '+str(i+1)+' of '+str(config['total_episode_num'])+' ++++++++++++++++++++++')
+    print('Run an episode')
     game.episode()                                              
-    # save data
+    print('Save data')      # save data
     if len(episode_history) < max_episode_history:              
         episode_history.append(game.chess_board.dataset)
     else:
@@ -67,13 +68,13 @@ for i in range(config['total_episode_num']):
     f = open('dataset/cur_idx.txt', 'w')
     f.write(str(cur_idx))
     f.close()
-    # build dataset
+    print('Build dataset')      # build dataset
     dataset = {}                                                
     for item in episode_history:
         merge_dataset(dataset, item)
     cur_dataset = DICT_Dataset(dataset)
     dataloader = DataLoader(cur_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
-    # train 1 epoch
+    print('Train 1 epoch')      # train 1 epoch
     for i, sample in tqdm(enumerate(dataloader), total=len(dataloader), smoothing=0.9):
         board = sample['board'].float().to(device)
         win_rate = sample['win_rate'].float().to(device).view(config['batch_size'], 1)
@@ -84,6 +85,6 @@ for i in range(config['total_episode_num']):
         for param in q_star.parameters():
             param.grad.data.clamp_(-1, 1)
         optimizer.step()
-    # update model
+    print('Update model')      # update model
     state = {'model_state_dict': q_star.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
     torch.save(state, config['save_model_path'])
