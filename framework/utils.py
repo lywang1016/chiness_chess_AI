@@ -1,4 +1,6 @@
 import numpy as np
+import h5py
+from os.path import exists
 from framework.constant import values_piece2
 
 def rotate_action(posi, move):
@@ -49,3 +51,41 @@ def merge_dataset(dataset1, dataset2): # merge dataset2 data into dataset1
         else:
             for i in range(3):
                 dataset1[key][i] += dataset2[key][i]
+
+def h5py_to_dataset(x_path, y_path):
+    dataset = {}
+    if exists(x_path) and exists(y_path):
+        fx = h5py.File(x_path, 'r')
+        fy = h5py.File(y_path, 'r')
+        for key in fx:
+            board = np.array(fx[key])
+            data = np.array(fy[key])
+            dataset[board_to_key(board)] = data
+        fx.close()
+        fy.close()
+    return dataset
+
+def h5py_add_dataset(x_path, y_path, dataset):
+    fx = h5py.File(x_path, "a")
+    fy = h5py.File(y_path, "a")
+    for key in dataset:
+        if str(key) in fx:
+            data_in_file = np.array(fy[str(key)])
+            for i in range(3):
+                data_in_file[i] += dataset[key][i]
+            del fy[str(key)]
+            fy.create_dataset(str(key), data=data_in_file)
+        else:
+            fx.create_dataset(str(key), data=key_to_board(key))
+            fy.create_dataset(str(key), data=dataset[key])
+    fx.close()
+    fy.close()
+
+def dataset_to_h5py(dataset, x_path, y_path):
+    fx = h5py.File(x_path, "w")
+    fy = h5py.File(y_path, "w")
+    for key in dataset:
+        fx.create_dataset(str(key), data=key_to_board(key))
+        fy.create_dataset(str(key), data=dataset[key])
+    fx.close()
+    fy.close()

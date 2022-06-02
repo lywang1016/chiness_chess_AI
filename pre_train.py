@@ -6,7 +6,7 @@ from tqdm import tqdm
 import torch
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
-from ai.dataset import MyDataset
+from ai.dataset import HDF5_Dataset
 from ai.network import DQN
 from ai.loss import MyLoss
 
@@ -18,7 +18,7 @@ with open('ai/config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 # load dataset
-dataset = MyDataset()
+dataset = HDF5_Dataset()
 dataloader = DataLoader(dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
 
 # load network, loss and define optimizer
