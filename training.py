@@ -14,7 +14,8 @@ with open('ai/config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 # define game
-game = Game(r_type='ai', b_type='ai', if_record=False, if_dataset=True, if_gui=False, ai_explore_rate=0.05)
+game = Game(r_type='human', b_type='ai', if_record=False, if_dataset=True, ai_explore_rate=0.05)
+# game = Game(r_type='ai', b_type='ai', if_record=False, if_dataset=True, if_gui=False, ai_explore_rate=0.05)
 
 # check if use GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -22,14 +23,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # load network, loss and define optimizer
 q_star = DQN().to(device)
 criterion = MyLoss().to(device)
-optimizer = torch.optim.Adam(q_star.parameters())
+optimizer = torch.optim.RMSprop(q_star.parameters(), lr=0.5*(config['lr_start']+config['lr_end']))
 if exists(config['save_model_path']):
     checkpoint = torch.load(config['save_model_path'])
     q_star.load_state_dict(checkpoint['model_state_dict'])
 q_star.train()
 
 # load the history dataset
-max_episode_history = 1000
+max_episode_history = config['save_episode_num']
 episode_history = []
 cur_idx = 0
 print('Load most recent ' + str(max_episode_history) + ' episode history...')

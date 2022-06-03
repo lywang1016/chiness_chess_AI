@@ -3,6 +3,7 @@ import yaml
 import random
 import numpy as np
 import torch
+from os.path import exists
 from heapq import heapify, heappop, heappush
 from framework.piece import King, Warrior, Minister, Rook, Cannon, Pawn, Knight
 from framework.utils import rotate_action, board_turn180, board_to_key
@@ -148,11 +149,13 @@ class AIPlayer(Player):
         self.all_move = {}
         self.past_board = []
         self.past_actions = []
+        with open('ai/config.yaml') as f:
+            self.config = yaml.load(f, Loader=yaml.FullLoader)
+        if not exists(self.config['save_model_path']):  # random action only
+            self.explore_rate = 1
         if self.explore_rate < 1:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             self.q_star = DQN().to(self.device)
-            with open('ai/config.yaml') as f:
-                self.config = yaml.load(f, Loader=yaml.FullLoader)
             checkpoint = torch.load(self.config['save_model_path'])
             self.q_star.load_state_dict(checkpoint['model_state_dict'])
             self.q_star.eval()

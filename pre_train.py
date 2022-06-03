@@ -24,7 +24,7 @@ dataloader = DataLoader(dataset, batch_size=config['batch_size'], shuffle=True, 
 # load network, loss and define optimizer
 q_star = DQN().to(device)
 criterion = MyLoss().to(device)
-optimizer = torch.optim.Adam(q_star.parameters())
+optimizer = torch.optim.RMSprop(q_star.parameters()) # optimizer = torch.optim.Adam(q_star.parameters())
 if exists(config['save_model_path']):
     checkpoint = torch.load(config['save_model_path'])
     q_star.load_state_dict(checkpoint['model_state_dict'])
