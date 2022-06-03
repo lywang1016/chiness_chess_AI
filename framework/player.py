@@ -270,6 +270,11 @@ class AIPlayer(Player):
         return posi, move
 
     def __exploit_action(self):
+        state = torch.from_numpy(copy.deepcopy(self.current_board)).to(self.device)
+        if str(self.device) == 'cuda':
+            state = state.view(1, 1, 10, 9).type(torch.cuda.FloatTensor)
+        else:
+            state = state.view(1, 1, 10, 9).type(torch.FloatTensor)
         queue = []
         heapify(queue)
         for posi in self.all_move:
@@ -278,12 +283,12 @@ class AIPlayer(Player):
                 value = next_board[posi[0]][posi[1]]
                 next_board[posi[0]][posi[1]] = 0
                 next_board[posi[0]+move[0]][posi[1]+move[1]] = value
-                state = torch.from_numpy(next_board).to(self.device)
+                action = torch.from_numpy(next_board).to(self.device)
                 if str(self.device) == 'cuda':
-                    state = state.view(1, 1, 10, 9).type(torch.cuda.FloatTensor)
+                    action = action.view(1, 1, 10, 9).type(torch.cuda.FloatTensor)
                 else:
-                    state = state.view(1, 1, 10, 9).type(torch.FloatTensor)
-                win_rate = self.q_star(state)
+                    action = action.view(1, 1, 10, 9).type(torch.FloatTensor)
+                win_rate = self.q_star(state, action)
                 win_rate = win_rate.cpu().detach().numpy()[0][0]
                 heappush(queue, (-win_rate, (posi, move)))
         value, action = heappop(queue)

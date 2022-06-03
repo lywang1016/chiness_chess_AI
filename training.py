@@ -24,7 +24,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # load network, loss and define optimizer
 q_star = DQN().to(device)
 criterion = MyLoss().to(device)
-optimizer = torch.optim.RMSprop(q_star.parameters(), lr=0.5*(config['lr_start']+config['lr_end']))
+optimizer = torch.optim.RMSprop(q_star.parameters(), lr=config['lr_start'])
 if exists(config['save_model_path']):
     checkpoint = torch.load(config['save_model_path'])
     q_star.load_state_dict(checkpoint['model_state_dict'])
@@ -79,8 +79,9 @@ for i in range(config['total_episode_num']):
     print('Train 1 epoch')      # train 1 epoch
     for i, sample in tqdm(enumerate(dataloader), total=len(dataloader), smoothing=0.9):
         board = sample['board'].float().to(device)
+        action = sample['action'].float().to(device)
         win_rate = sample['win_rate'].float().to(device).view(config['batch_size'], 1)
-        predict_win_rate = q_star(board)
+        predict_win_rate = q_star(board, action)
         loss = criterion(win_rate, predict_win_rate)
         optimizer.zero_grad()
         loss.backward()
