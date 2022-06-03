@@ -28,13 +28,10 @@ def key_to_board(key):
 
 def print_dataset(dataset):
     for key in dataset:
-        print(dataset[key])
-        for i in range(10):
-            row_str = ''
-            for j in range(9):
-                row_str += values_piece2[key[i][j]]
-            print(row_str)
-        print('##################')
+        print('##### Before ######')
+        print_board(key_to_board(key[0]))
+        print('##### After ######')
+        print_board(key_to_board(key[1]))
 
 def print_board(board):
     for i in range(10):
@@ -58,12 +55,21 @@ def h5py_to_dataset(x_path, y_path):
         fx = h5py.File(x_path, 'r')
         fy = h5py.File(y_path, 'r')
         for key in fx:
-            board = np.array(fx[key])
+            boards = np.array(fx[key])
             data = np.array(fy[key])
-            dataset[board_to_key(board)] = data
+            dataset[(board_to_key(boards[0]), board_to_key(boards[1]))] = data
         fx.close()
         fy.close()
     return dataset
+
+def dataset_to_h5py(dataset, x_path, y_path):
+    fx = h5py.File(x_path, "w")
+    fy = h5py.File(y_path, "w")
+    for key in dataset:
+        fx.create_dataset(str(key), data=np.array((key_to_board(key[0]), key_to_board(key[1]))))
+        fy.create_dataset(str(key), data=dataset[key])
+    fx.close()
+    fy.close()
 
 def h5py_add_dataset(x_path, y_path, dataset):
     fx = h5py.File(x_path, "a")
@@ -76,16 +82,7 @@ def h5py_add_dataset(x_path, y_path, dataset):
             del fy[str(key)]
             fy.create_dataset(str(key), data=data_in_file)
         else:
-            fx.create_dataset(str(key), data=key_to_board(key))
+            fx.create_dataset(str(key), data=np.array((key_to_board(key[0]), key_to_board(key[1]))))
             fy.create_dataset(str(key), data=dataset[key])
-    fx.close()
-    fy.close()
-
-def dataset_to_h5py(dataset, x_path, y_path):
-    fx = h5py.File(x_path, "w")
-    fy = h5py.File(y_path, "w")
-    for key in dataset:
-        fx.create_dataset(str(key), data=key_to_board(key))
-        fy.create_dataset(str(key), data=dataset[key])
     fx.close()
     fy.close()

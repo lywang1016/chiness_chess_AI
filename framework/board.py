@@ -17,6 +17,8 @@ class ChessBoard:
         self.action_history = []
         self.red_action_history = []
         self.black_action_history = []
+        self.red_action_board = []
+        self.black_action_board = []
         self.reset_board()
 
     def reset_board(self):
@@ -63,6 +65,8 @@ class ChessBoard:
         self.action_history = []
         self.red_action_history = []
         self.black_action_history = []
+        self.red_action_board = []
+        self.black_action_board = []
 
     def set_done(self, win_color):
         self.win = win_color
@@ -101,49 +105,63 @@ class ChessBoard:
     
     def move_piece(self, position, move):
         self.action_history.append((position, move))
+
         if self.red:
             self.red_history.append(board_to_key(self.board_states()))
             self.red_action_history.append((position, move))
         else:
             self.black_history.append(board_to_key(board_turn180(self.board_states())))
             self.black_action_history.append((rotate_action(position, move)))
-        self.red = not self.red
 
         value = self.board[position[0]][position[1]]
         self.board[position[0]][position[1]] = 0
         self.board[position[0]+move[0]][position[1]+move[1]] = value
         self.check_done()
 
+        if self.red:
+            self.red_action_board.append(board_to_key(self.board_states()))
+        else:
+            self.black_action_board.append(board_to_key(board_turn180(self.board_states())))
+        self.red = not self.red
+
     def fill_dataset(self):
+        red_len = len(self.red_history)
+        black_len = len(self.black_history)
         if self.win == 'r':
-            for key in self.red_history:
+            for i in range(red_len):
+                key = (self.red_history[i], self.red_action_board[i])
                 if key not in self.dataset:
                     self.dataset[key] = [1, 0, 0]
                 else:
                     self.dataset[key][0] += 1
-            for key in self.black_history:
+            for i in range(black_len):
+                key = (self.black_history[i], self.black_action_board[i])
                 if key not in self.dataset:
                     self.dataset[key] = [0, 0, 1]
                 else:
                     self.dataset[key][2] += 1
         if self.win == 'b':
-            for key in self.black_history:
+            for i in range(black_len):
+                key = (self.black_history[i], self.black_action_board[i])
                 if key not in self.dataset:
                     self.dataset[key] = [1, 0, 0]
                 else:
                     self.dataset[key][0] += 1
-            for key in self.red_history:
+            for i in range(red_len):
+                key = (self.red_history[i], self.red_action_board[i])
                 if key not in self.dataset:
                     self.dataset[key] = [0, 0, 1]
                 else:
                     self.dataset[key][2] += 1
         if self.win == 't':
-            for key in self.black_history:
+            for i in range(red_len):
+                key = (self.red_history[i], self.red_action_board[i])
                 if key not in self.dataset:
                     self.dataset[key] = [0, 1, 0]
                 else:
                     self.dataset[key][1] += 1
-            for key in self.red_history:
+            for i in range(black_len):
+                key = (self.black_history[i], self.black_action_board[i])
                 if key not in self.dataset:
                     self.dataset[key] = [0, 1, 0]
                 else:
