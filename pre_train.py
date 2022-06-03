@@ -42,8 +42,9 @@ for epoch in range(config['epoch']):
     loss_sum = 0
     for i, sample in tqdm(enumerate(dataloader), total=num_batches, smoothing=0.9):
         board = sample['board'].float().to(device)
+        action = sample['action'].float().to(device)
         win_rate = sample['win_rate'].float().to(device).view(config['batch_size'], 1)
-        predict_win_rate = q_star(board)
+        predict_win_rate = q_star(board, action)
         loss = criterion(win_rate, predict_win_rate)
         optimizer.zero_grad()
         loss.backward()
