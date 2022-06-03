@@ -14,8 +14,9 @@ with open('ai/config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
 # define game
-game = Game(r_type='human', b_type='ai', if_record=False, if_dataset=True, ai_explore_rate=0.05)
-# game = Game(r_type='ai', b_type='ai', if_record=False, if_dataset=True, if_gui=False, ai_explore_rate=0.05)
+# game = Game(r_type='ai', b_type='human', if_record=False, if_dataset=True, ai_explore_rate=0.05)
+# game = Game(r_type='human', b_type='ai', if_record=False, if_dataset=True, ai_explore_rate=0.05)
+game = Game(r_type='ai', b_type='ai', if_record=False, if_dataset=True, if_gui=False, ai_explore_rate=0.05)
 
 # check if use GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
